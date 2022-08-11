@@ -1,0 +1,4 @@
+:root {
+  /* color-scheme: dark; */
+  --theme--bg--img: url('@/assets/images/login-bg-dark.svg');
+}

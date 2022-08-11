@@ -1,0 +1,9 @@
+:root {
+  color: red;
+  background-image: var(--theme--bg--img);
+  :global {
+    a {
+      background-color: red;
+    }
+  }
+}
