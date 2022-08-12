@@ -1,15 +1,12 @@
 import { shallowEqual } from 'react-redux'
 import { getuserInfo } from '../api/user'
 import { useAppDispatch, useAppSelector } from '../redux/hook'
-import { add, minus, getAsyncInfo, getUserInfo } from '../redux/slice'
+import { add, minus, getUserInfo } from '../redux/slice'
 
 export const APage = () => {
   console.log('A渲染了')
 
-  const { count } = useAppSelector(
-    (state) => ({ ...state.state }),
-    shallowEqual
-  )
+  const { count } = useAppSelector((state) => ({ ...state.user }), shallowEqual)
   const dispatch = useAppDispatch()
   return (
     <div>
@@ -29,13 +26,7 @@ export const APage = () => {
       >
         减1
       </button>
-      <button
-        onClick={() => {
-          dispatch(getAsyncInfo())
-        }}
-      >
-        异步加10
-      </button>
+
       <button
         onClick={() => {
           dispatch(getUserInfo({ username: 'admin', password: '123456' }))

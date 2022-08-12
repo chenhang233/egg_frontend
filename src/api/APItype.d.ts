@@ -26,17 +26,21 @@ export interface Route {
   auth: boolean
 }
 export type Menu = {
-  menu: {
-    menuInfo: {
-      roleName: string
-      roleMark: string
-    }
-    router: Route[]
+  menuInfo: {
+    roleName: string
+    roleMark: string
   }
+  router: Route[]
 }
 export type LOginData = {
   username: string
   password: string
+}
+export interface LoginReduxData {
+  refreshToken: string
+  token: string
+  menu: Menu
+  userinfo: UserInfo
 }
 export type LoginReturn = BASE_RETURN<{
   refreshToken: string

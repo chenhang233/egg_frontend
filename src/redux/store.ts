@@ -1,15 +1,15 @@
 import { configureStore } from '@reduxjs/toolkit'
-import thunkMiddleware from 'redux-thunk'
+// import thunkMiddleware from 'redux-thunk'
 import stateSlice from './slice'
 // import otherSlice from "./otherSlice";
 
 export const store = configureStore({
   // 每个reducer代表一个模块的状态管理器
   reducer: {
-    state: stateSlice,
+    user: stateSlice,
     // other: otherSlice,
   },
-  middleware: [thunkMiddleware],
+  // middleware: [thunkMiddleware],
   devTools: true,
 })
 

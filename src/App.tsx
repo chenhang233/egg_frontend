@@ -3,18 +3,18 @@ import classNames from 'classnames'
 import styles from './App.module.scss'
 import { Routes, Route, Navigate } from 'react-router-dom'
 import NotFound from './pages/NotFound/NotFound'
-import { useCheckTheme } from './hooks'
+
 const Login = React.lazy(() => import('./pages/Login'))
+const Index = React.lazy(() => import('./pages/Index/Index'))
 
 function App() {
-  useCheckTheme()
-
   return (
     <div className={classNames(styles.root)}>
       <Suspense fallback={<div>Loading...</div>}>
         <Routes>
           <Route path="/" element={<Navigate to={'/login'} />}></Route>
           <Route path="/login" element={<Login />}></Route>
+          <Route path="/index" element={<Index />}></Route>
           <Route path="*" element={<NotFound />} />
         </Routes>
       </Suspense>

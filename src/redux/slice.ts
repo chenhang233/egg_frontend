@@ -1,37 +1,26 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import type { PayloadAction } from '@reduxjs/toolkit'
 import { getuserInfo } from '../api/user'
-import { LOginData, LoginReturn } from '../api/APItype'
+import { LOginData, LoginReduxData } from '../api/APItype'
 interface InitialState {
-  userinfo: LoginReturn | {}
+  info: LoginReduxData | null
   count: number
   text: string
+  theme: 'default' | 'dark'
 }
 
 const initialState: InitialState = {
   count: 0,
   text: '我是文字',
-  userinfo: {},
+  info: null,
+  theme: 'default',
 }
 
 export interface PromiseNum {
   number: number
 }
 
-const promise_one: Promise<PromiseNum> = new Promise((res, rej) => {
-  setTimeout(() => {
-    res({ number: 10 })
-  }, 3000)
-})
-
 // 异步Action
-export const getAsyncInfo = createAsyncThunk('getAsyncInfo', async () => {
-  console.log('12313132')
-
-  const data = await promise_one
-  return data
-})
-
 export const getUserInfo = createAsyncThunk(
   'getRouterInfo',
   async (payload: LOginData) => {
@@ -41,9 +30,12 @@ export const getUserInfo = createAsyncThunk(
 )
 
 export const stateSlice = createSlice({
-  name: 'state',
+  name: 'user',
   initialState,
   reducers: {
+    changeTheme: (user, action: PayloadAction<'default' | 'dark'>) => {
+      user.theme = action.payload
+    },
     add: (state) => {
       state.count += 1
     },
@@ -59,20 +51,11 @@ export const stateSlice = createSlice({
   },
   extraReducers: (builder) => {
     // 进行请求阶段的一些操作
-    builder.addCase(getAsyncInfo.pending, () => {
-      console.log('进行中')
-    })
-    builder.addCase(getAsyncInfo.fulfilled, (state, action) => {
-      state.count += action.payload.number
-    })
-    builder.addCase(getAsyncInfo.rejected, () => {
-      console.log('失败')
-    })
     builder.addCase(getUserInfo.fulfilled, (state, action) => {
-      state.userinfo = action.payload
+      state.info = action.payload.data.data
     })
     builder.addCase(getUserInfo.pending, () => {
-      console.log('登录 action')
+      console.log('登录 action pending')
     })
     builder.addCase(getUserInfo.rejected, () => {
       console.log('登录 action失败')
@@ -80,5 +63,5 @@ export const stateSlice = createSlice({
   },
 })
 
-export const { add, minus, change, back } = stateSlice.actions
+export const { add, minus, change, back, changeTheme } = stateSlice.actions
 export default stateSlice.reducer

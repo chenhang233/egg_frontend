@@ -1,4 +1,18 @@
-import axios from 'axios'
+import axios, { AxiosResponse } from 'axios'
+import { BASE_RETURN } from './APItype'
+import { message } from 'antd'
+
+export const success = (msg?: string) => {
+  message.success(msg || '成功', 3)
+}
+
+export const error = (msg?: string) => {
+  message.error(msg || 'error', 3)
+}
+
+export const warning = (msg?: String) => {
+  message.warning(msg || 'WARNIMG', 3)
+}
 
 const instance = axios.create({
   baseURL: process.env.REACT_APP_PUBLIC_URL,
@@ -24,12 +38,15 @@ instance.interceptors.request.use(
 
 // 添加响应拦截器
 instance.interceptors.response.use(
-  function (response) {
+  function (response: AxiosResponse<BASE_RETURN<any>>) {
     // 对响应数据做点什么
     if (response.status === 200) {
-      return response.data
+      const res = response.data
+      if (res.code === 1) {
+        return error(res.message)
+      }
+      return response
     }
-    return response
   },
   function (error) {
     // 对响应错误做点什么
