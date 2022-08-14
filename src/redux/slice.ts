@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import type { PayloadAction } from '@reduxjs/toolkit'
-import { getuserInfo } from '../api/user'
+import { getuserInfo, registerUser } from '../api/user'
 import { LOginData, LoginReduxData } from '../api/APItype'
 interface InitialState {
   info: LoginReduxData | null
@@ -22,9 +22,16 @@ export interface PromiseNum {
 
 // 异步Action
 export const getUserInfo = createAsyncThunk(
-  'getRouterInfo',
+  'getUserInfo',
   async (payload: LOginData) => {
     const data = await getuserInfo(payload)
+    return data
+  }
+)
+export const getRegisterUser = createAsyncThunk(
+  'getRegisterUser',
+  async (payload: LOginData) => {
+    const data = await registerUser(payload)
     return data
   }
 )
@@ -59,6 +66,9 @@ export const stateSlice = createSlice({
     })
     builder.addCase(getUserInfo.rejected, () => {
       console.log('登录 action失败')
+    })
+    builder.addCase(getRegisterUser.fulfilled, (state, action) => {
+      console.log(action.payload.data.data)
     })
   },
 })

@@ -1,16 +1,18 @@
-import { Button, Col, Form, Input, Row, Spin } from 'antd'
+import { Button, Col, Form, Input, Row } from 'antd'
 import classNames from 'classnames'
 import styles from './index.module.scss'
-import { LockOutlined, UserOutlined, LoadingOutlined } from '@ant-design/icons'
+import { LockOutlined, UserOutlined } from '@ant-design/icons'
 import { LOginData } from '../../../../api/APItype'
 import { useAppDispatch } from '../../../../redux/hook'
 import { getUserInfo } from '../../../../redux/slice'
 import { useState } from 'react'
 import { success } from '../../../../api'
 import { useNavigate } from 'react-router-dom'
+import Loading from '../../../../components/Loading'
 
 interface Prop_loginFomr {
   changeIsLogin: () => void
+  initialValues?: LOginData
 }
 
 const LoginForm = (props: Prop_loginFomr) => {
@@ -18,31 +20,37 @@ const LoginForm = (props: Prop_loginFomr) => {
   const [isLogin, setIsLogin] = useState(false)
   const navigate = useNavigate()
   const onFinish = async (values: LOginData) => {
-    setIsLogin(true)
-    await dispatch(getUserInfo(values))
-    setIsLogin(false)
-    success('登录成功')
-    navigate('/index')
+    try {
+      setIsLogin(true)
+      await dispatch(getUserInfo(values))
+      setIsLogin(false)
+      success('登录成功')
+      navigate('/index')
+    } catch (error) {
+      setIsLogin(false)
+    }
   }
-  const antIcon = <LoadingOutlined style={{ fontSize: 100 }} spin />
   return (
     <div className={classNames(styles.root)}>
-      <h3>登录</h3>
+      {!isLogin && <h3 className="wheelHueColor">登录</h3>}
       {isLogin ? (
-        <Spin indicator={antIcon} className="Spin" />
+        <Loading
+          spanArr={Array.from({ length: 20 }, (_, i) => i + 1)}
+          styleObj={{ position: 'absolute', top: '0px', left: '225px' }}
+        ></Loading>
       ) : (
         <Form
-          name="basic"
           labelCol={{ span: 8 }}
           wrapperCol={{ span: 16 }}
-          initialValues={{ remember: true }}
+          initialValues={
+            props.initialValues || { username: 'admin', password: '12356' }
+          }
           onFinish={onFinish}
           autoComplete="off"
         >
           <Form.Item
             label="用户名"
             name="username"
-            initialValue={'admin'}
             rules={[
               { required: true, message: '请输入用户名!' },
               { min: 2, max: 20, message: '输入2-20个字符' },
@@ -57,7 +65,6 @@ const LoginForm = (props: Prop_loginFomr) => {
           <Form.Item
             label="密码"
             name="password"
-            initialValue={'12356'}
             rules={[
               { required: true, message: '请输入密码!' },
               { min: 2, max: 20, message: '输入2-20个字符' },

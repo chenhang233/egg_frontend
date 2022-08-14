@@ -1,4 +1,4 @@
-import axios, { AxiosResponse } from 'axios'
+import axios, { AxiosError, AxiosResponse } from 'axios'
 import { BASE_RETURN } from './APItype'
 import { message } from 'antd'
 
@@ -48,9 +48,12 @@ instance.interceptors.response.use(
       return response
     }
   },
-  function (error) {
+  function (e: AxiosError) {
+    if (e.code === 'ECONNABORTED') {
+      return error('远程主机拒绝网络连接')
+    }
+    throw new Error('服务器error')
     // 对响应错误做点什么
-    return Promise.reject(error)
   }
 )
 export default instance

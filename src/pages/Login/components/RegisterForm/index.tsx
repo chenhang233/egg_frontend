@@ -1,62 +1,90 @@
-import { Button, Checkbox, Form, Input } from 'antd'
+import { Button, Col, Form, Input, Row } from 'antd'
+import { LockOutlined, UserOutlined } from '@ant-design/icons'
 import classNames from 'classnames'
+import { useState } from 'react'
+import Loading from '../../../../components/Loading'
+import { useAppDispatch } from '../../../../redux/hook'
 import styles from './index.module.scss'
+import { getRegisterUser } from '../../../../redux/slice'
+import { LOginData } from '../../../../api/APItype'
+import { success } from '../../../../api'
 
 interface Prop_registerForm {
-  changeIsLogin: () => void
+  changeIsLogin: (data?: LOginData) => void
 }
 
 const RegisterForm = (props: Prop_registerForm) => {
-  const onFinish = (values: any) => {
-    console.log('Success:', values)
+  const dispatch = useAppDispatch()
+  const [isRegister, setIsRegister] = useState(false)
+  const onFinish = async (values: LOginData) => {
+    try {
+      setIsRegister(true)
+      await dispatch(getRegisterUser(values))
+      setIsRegister(false)
+      success('注册成功')
+      props.changeIsLogin(values)
+    } catch (error) {
+      setIsRegister(false)
+    }
   }
 
-  const onFinishFailed = (errorInfo: any) => {
-    console.log('Failed:', errorInfo)
-  }
   return (
     <div className={classNames(styles.root)}>
-      <h3>注册</h3>
-      <Form
-        name="basic"
-        labelCol={{ span: 8 }}
-        wrapperCol={{ span: 16 }}
-        initialValues={{ remember: true }}
-        onFinish={onFinish}
-        onFinishFailed={onFinishFailed}
-        autoComplete="off"
-      >
-        <Form.Item
-          label="Username"
-          name="username"
-          rules={[{ required: true, message: 'Please input your username!' }]}
+      {!isRegister && <h3 className="wheelHueColor">注册</h3>}
+      {isRegister ? (
+        <Loading
+          spanArr={Array.from({ length: 20 }, (_, i) => i + 1)}
+          styleObj={{ position: 'absolute', top: '0px', left: '225px' }}
+        ></Loading>
+      ) : (
+        <Form
+          labelCol={{ span: 8 }}
+          wrapperCol={{ span: 16 }}
+          onFinish={onFinish}
+          autoComplete="off"
         >
-          <Input />
-        </Form.Item>
+          <Form.Item
+            label="用户名"
+            name="username"
+            rules={[
+              { required: true, message: '请输入用户名!' },
+              { min: 2, max: 20, message: '输入2-20个字符' },
+            ]}
+          >
+            <Input
+              prefix={<UserOutlined className="site-form-item-icon" />}
+              placeholder="Username"
+            />
+          </Form.Item>
 
-        <Form.Item
-          label="Password"
-          name="password"
-          rules={[{ required: true, message: 'Please input your password!' }]}
-        >
-          <Input.Password />
-        </Form.Item>
+          <Form.Item
+            label="密码"
+            name="password"
+            rules={[
+              { required: true, message: '请输入密码!' },
+              { min: 2, max: 20, message: '输入2-20个字符' },
+            ]}
+          >
+            <Input.Password
+              prefix={<LockOutlined className="site-form-item-icon" />}
+              type="password"
+              placeholder="Password"
+            />
+          </Form.Item>
 
-        <Form.Item
-          name="remember"
-          valuePropName="checked"
-          wrapperCol={{ offset: 8, span: 16 }}
-        >
-          <Checkbox>Remember me</Checkbox>
-          <Button onClick={() => props.changeIsLogin()}>去登录</Button>
-        </Form.Item>
+          <Row gutter={24} justify={'center'}>
+            <Col>
+              <Button type="primary" htmlType="submit">
+                注册
+              </Button>
+            </Col>
 
-        <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
-          <Button type="primary" htmlType="submit">
-            注册
-          </Button>
-        </Form.Item>
-      </Form>
+            <Col>
+              <Button onClick={() => props.changeIsLogin()}>去登录</Button>
+            </Col>
+          </Row>
+        </Form>
+      )}
     </div>
   )
 }

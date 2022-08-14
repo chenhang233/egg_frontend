@@ -1,0 +1,4 @@
+:root {
+  --theme--default--bgi--: url('../assets/images/login-bg.default.svg');
+  --theme--dark--bgi--: url('../assets/images/login-bg-dark.svg');
+}

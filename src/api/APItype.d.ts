@@ -48,3 +48,5 @@ export type LoginReturn = BASE_RETURN<{
   menu: Menu
   userinfo: UserInfo
 }>
+
+export type RegisterReturn = BASE_RETURN<LOginData>

@@ -7,11 +7,16 @@
   animation: move 0.8s ease-in-out;
   :global {
     h3 {
+      display: block;
       position: absolute;
       top: -55px;
       left: 280px;
       text-align: center;
       font-size: 20px;
+    }
+    .wheelHueColor {
+      animation: wheelHueColor 20s infinite;
+      color: rgb(236, 100, 75);
     }
     .Spin {
       position: absolute;

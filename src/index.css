@@ -1,6 +1,6 @@
 @import '~antd/dist/antd.css';
-/* @import './theme/dark.css'; */
-/* @import './theme/default.css'; */
+@import './theme/theme.css';
+@import './theme/animate.css';
 
 html,
 body,
