@@ -45,8 +45,11 @@ export interface LoginReduxData {
 export type LoginReturn = BASE_RETURN<{
   refreshToken: string
   token: string
-  menu: Menu
-  userinfo: UserInfo
+  // userinfo: UserInfo
 }>
 
 export type RegisterReturn = BASE_RETURN<LOginData>
+
+export type MenusReturn = BASE_RETURN<{ menu: Menu }>
+
+export type RefreshTokenReturn = BASE_RETURN<{ token: string }>

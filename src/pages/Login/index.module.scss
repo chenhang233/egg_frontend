@@ -24,6 +24,26 @@
       height: 400px;
       border-radius: 10%;
       background-color: #fff;
+      &.dark {
+        background-color: var(--theme--dark--backgroundolor--);
+      }
+    }
+
+    .default .ant-input-affix-wrapper,
+    .default .ant-input {
+      background-color: var(--theme--default--color--);
+    }
+    .dark .ant-input-affix-wrapper,
+    .dark .ant-input {
+      background-color: var(--theme--dark--color--);
+    }
+    .ant-btn {
+      &.dark {
+        background-color: var(--theme--dark--color--);
+      }
+    }
+    .dark .ant-form-item-label > label {
+      color: var(--theme--default--color--);
     }
   }
 }

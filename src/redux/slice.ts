@@ -1,9 +1,10 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import type { PayloadAction } from '@reduxjs/toolkit'
-import { getuserInfo, registerUser } from '../api/user'
+import { getuserInfo, getUserMenu, registerUser } from '../api/user'
 import { LOginData, LoginReduxData } from '../api/APItype'
+import { localStorage_add } from '../utils'
 interface InitialState {
-  info: LoginReduxData | null
+  info: LoginReduxData
   count: number
   text: string
   theme: 'default' | 'dark'
@@ -12,7 +13,7 @@ interface InitialState {
 const initialState: InitialState = {
   count: 0,
   text: '我是文字',
-  info: null,
+  info: {} as LoginReduxData,
   theme: 'default',
 }
 
@@ -35,6 +36,10 @@ export const getRegisterUser = createAsyncThunk(
     return data
   }
 )
+export const getUserMenus = createAsyncThunk('getUserMenus', async () => {
+  const data = await getUserMenu()
+  return data
+})
 
 export const stateSlice = createSlice({
   name: 'user',
@@ -59,7 +64,11 @@ export const stateSlice = createSlice({
   extraReducers: (builder) => {
     // 进行请求阶段的一些操作
     builder.addCase(getUserInfo.fulfilled, (state, action) => {
-      state.info = action.payload.data.data
+      const data = action.payload.data.data
+      state.info.token = data.token
+      state.info.refreshToken = data.refreshToken
+      localStorage_add('token', data.token)
+      localStorage_add('refreshToken', data.refreshToken)
     })
     builder.addCase(getUserInfo.pending, () => {
       console.log('登录 action pending')
@@ -68,7 +77,11 @@ export const stateSlice = createSlice({
       console.log('登录 action失败')
     })
     builder.addCase(getRegisterUser.fulfilled, (state, action) => {
-      console.log(action.payload.data.data)
+      console.log(action.payload.data.data) // 触发error
+    })
+    builder.addCase(getUserMenus.fulfilled, (state, action) => {
+      const menu = action.payload.data.data.menu
+      state.info.menu = menu
     })
   },
 })

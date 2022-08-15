@@ -1,4 +1,7 @@
 :root {
   --theme--default--bgi--: url('../assets/images/login-bg.default.svg');
+  --theme--default--color--: #f1f1f1;
   --theme--dark--bgi--: url('../assets/images/login-bg-dark.svg');
+  --theme--dark--color--: #232a3b;
+  --theme--dark--backgroundolor--: #000;
 }

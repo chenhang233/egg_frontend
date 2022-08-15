@@ -20,11 +20,10 @@ const Login = () => {
   }
   return (
     <div className={classNames(styles.root, styles[theme])}>
-      {theme}
       <div className="tip">
         <ThemeButton></ThemeButton>
       </div>
-      <section className="section">
+      <section className={classNames('section', theme)}>
         {isLogin ? (
           <LoginForm
             changeIsLogin={changeIsLogin}

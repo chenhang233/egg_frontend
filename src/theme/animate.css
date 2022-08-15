@@ -49,3 +49,32 @@
     transform: scale(0);
   }
 }
+
+@keyframes margin_left {
+  0% {
+    opacity: 0;
+    margin-left: 400px;
+  }
+  50% {
+    opacity: 0.5;
+    margin-left: 200px;
+  }
+  100% {
+    opacity: 1;
+    margin-left: 0;
+  }
+}
+@keyframes margin_right {
+  0% {
+    opacity: 0;
+    margin-right: 400px;
+  }
+  50% {
+    opacity: 0.5;
+    margin-right: 200px;
+  }
+  100% {
+    opacity: 1;
+    margin-right: 0;
+  }
+}

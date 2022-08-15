@@ -1,7 +1,7 @@
 import { Button, Col, Form, Input, Row } from 'antd'
 import { LockOutlined, UserOutlined } from '@ant-design/icons'
 import classNames from 'classnames'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import Loading from '../../../../components/Loading'
 import { useAppDispatch } from '../../../../redux/hook'
 import styles from './index.module.scss'
@@ -27,6 +27,10 @@ const RegisterForm = (props: Prop_registerForm) => {
       setIsRegister(false)
     }
   }
+  useEffect(() => {
+    const nodes = document.querySelectorAll('.ant-form-item')
+    nodes.forEach((node, i) => node.setAttribute('style', `--i:${i + 1}`))
+  }, [])
 
   return (
     <div className={classNames(styles.root)}>
@@ -71,18 +75,19 @@ const RegisterForm = (props: Prop_registerForm) => {
               placeholder="Password"
             />
           </Form.Item>
+          <Form.Item wrapperCol={{ offset: 5 }}>
+            <Row gutter={24} justify={'center'}>
+              <Col>
+                <Button type="primary" htmlType="submit">
+                  注册
+                </Button>
+              </Col>
 
-          <Row gutter={24} justify={'center'}>
-            <Col>
-              <Button type="primary" htmlType="submit">
-                注册
-              </Button>
-            </Col>
-
-            <Col>
-              <Button onClick={() => props.changeIsLogin()}>去登录</Button>
-            </Col>
-          </Row>
+              <Col>
+                <Button onClick={() => props.changeIsLogin()}>去登录</Button>
+              </Col>
+            </Row>
+          </Form.Item>
         </Form>
       )}
     </div>

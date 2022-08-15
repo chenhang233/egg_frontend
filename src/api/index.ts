@@ -1,7 +1,13 @@
 import axios, { AxiosError, AxiosResponse } from 'axios'
 import { BASE_RETURN } from './APItype'
 import { message } from 'antd'
-
+import {
+  localStorage_add,
+  localStorage_clear,
+  localStorage_get,
+} from '../utils'
+import { history } from '../index'
+import { getUserToken } from './user'
 export const success = (msg?: string) => {
   message.success(msg || '成功', 3)
 }
@@ -20,7 +26,6 @@ const instance = axios.create({
   //   headers: {'X-Custom-Header': 'foobar'}
 })
 
-instance.defaults.headers.common['Authorization'] = 'token xxxxx'
 instance.defaults.headers.post['Content-Type'] =
   'application/x-www-form-urlencoded'
 
@@ -28,6 +33,12 @@ instance.defaults.headers.post['Content-Type'] =
 instance.interceptors.request.use(
   function (config) {
     // 在发送请求之前做些什么
+    if (config.headers) {
+      let token = localStorage_get('token')
+      if (token) {
+        config.headers.Authorization = `Bearer ${token}`
+      }
+    }
     return config
   },
   function (error) {
@@ -43,16 +54,50 @@ instance.interceptors.response.use(
     if (response.status === 200) {
       const res = response.data
       if (res.code === 1) {
+        const token = localStorage_get('token')
+        if (!token) {
+          history.push('/login')
+        }
         return error(res.message)
       }
       return response
     }
   },
-  function (e: AxiosError) {
+  async function (e: AxiosError<BASE_RETURN<any>>) {
     if (e.code === 'ECONNABORTED') {
       return error('远程主机拒绝网络连接')
     }
-    throw new Error('服务器error')
+    if (e.response?.status === 401) {
+      const refToken = localStorage_get('refreshToken')
+      const url = e.config.url
+      if (refToken && url) {
+        getUserToken(`Bearer ${refToken}`)
+          .then((res) => {
+            const {
+              data: { message, data, code },
+            } = res
+            if (code === 0) {
+              localStorage_add('token', data.token)
+              instance.post(url, e.config.data, {
+                headers: { Authorization: `Bearer ${data.token}` },
+              })
+            } else {
+              history.replace('/login')
+              return error(message)
+            }
+          })
+          .catch((err) => {
+            console.log(err)
+            localStorage_clear()
+          })
+      } else {
+        history.replace('/login')
+        return error('未授权-或者' + e.response.data.message)
+      }
+    } else {
+      error('未知响应错误')
+      throw new Error('服务器error')
+    }
     // 对响应错误做点什么
   }
 )

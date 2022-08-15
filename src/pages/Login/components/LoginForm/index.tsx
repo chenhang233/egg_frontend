@@ -3,12 +3,13 @@ import classNames from 'classnames'
 import styles from './index.module.scss'
 import { LockOutlined, UserOutlined } from '@ant-design/icons'
 import { LOginData } from '../../../../api/APItype'
-import { useAppDispatch } from '../../../../redux/hook'
+import { useAppDispatch, useAppSelector } from '../../../../redux/hook'
 import { getUserInfo } from '../../../../redux/slice'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { success } from '../../../../api'
 import { useNavigate } from 'react-router-dom'
 import Loading from '../../../../components/Loading'
+import { shallowEqual } from 'react-redux'
 
 interface Prop_loginFomr {
   changeIsLogin: () => void
@@ -17,6 +18,7 @@ interface Prop_loginFomr {
 
 const LoginForm = (props: Prop_loginFomr) => {
   const dispatch = useAppDispatch()
+  const theme = useAppSelector((state) => state.user.theme, shallowEqual)
   const [isLogin, setIsLogin] = useState(false)
   const navigate = useNavigate()
   const onFinish = async (values: LOginData) => {
@@ -30,6 +32,10 @@ const LoginForm = (props: Prop_loginFomr) => {
       setIsLogin(false)
     }
   }
+  useEffect(() => {
+    const nodes = document.querySelectorAll('.ant-form-item')
+    nodes.forEach((node, i) => node.setAttribute('style', `--i:${i + 1}`))
+  }, [])
   return (
     <div className={classNames(styles.root)}>
       {!isLogin && <h3 className="wheelHueColor">登录</h3>}
@@ -40,6 +46,7 @@ const LoginForm = (props: Prop_loginFomr) => {
         ></Loading>
       ) : (
         <Form
+          className={classNames(theme)}
           labelCol={{ span: 8 }}
           wrapperCol={{ span: 16 }}
           initialValues={
@@ -76,18 +83,24 @@ const LoginForm = (props: Prop_loginFomr) => {
               placeholder="Password"
             />
           </Form.Item>
+          <Form.Item wrapperCol={{ offset: 5 }}>
+            <Row gutter={24} justify={'center'}>
+              <Col>
+                <Button type="primary" htmlType="submit">
+                  登录
+                </Button>
+              </Col>
 
-          <Row gutter={24} justify={'center'}>
-            <Col>
-              <Button type="primary" htmlType="submit">
-                登录
-              </Button>
-            </Col>
-
-            <Col>
-              <Button onClick={() => props.changeIsLogin()}>去注册</Button>
-            </Col>
-          </Row>
+              <Col>
+                <Button
+                  onClick={() => props.changeIsLogin()}
+                  className={classNames(theme)}
+                >
+                  去注册
+                </Button>
+              </Col>
+            </Row>
+          </Form.Item>
         </Form>
       )}
     </div>
