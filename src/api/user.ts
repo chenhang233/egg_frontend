@@ -7,7 +7,7 @@ import {
 } from './APItype'
 import http from './index'
 
-export const getuserInfo = (data: LOginData) =>
+export const loginUser = (data: LOginData) =>
   http.post<LoginReturn>('/users/login', data)
 
 export const registerUser = (data: LOginData) =>

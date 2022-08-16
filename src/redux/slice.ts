@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import type { PayloadAction } from '@reduxjs/toolkit'
-import { getuserInfo, getUserMenu, registerUser } from '../api/user'
+import { loginUser, getUserMenu, registerUser } from '../api/user'
 import { LOginData, LoginReduxData } from '../api/APItype'
 import { localStorage_add } from '../utils'
 interface InitialState {
@@ -13,7 +13,10 @@ interface InitialState {
 const initialState: InitialState = {
   count: 0,
   text: '我是文字',
-  info: {} as LoginReduxData,
+  info: {
+    menu: {},
+    userinfo: {},
+  } as LoginReduxData,
   theme: 'default',
 }
 
@@ -22,10 +25,10 @@ export interface PromiseNum {
 }
 
 // 异步Action
-export const getUserInfo = createAsyncThunk(
-  'getUserInfo',
+export const _loginUser = createAsyncThunk(
+  'loginUser',
   async (payload: LOginData) => {
-    const data = await getuserInfo(payload)
+    const data = await loginUser(payload)
     return data
   }
 )
@@ -63,17 +66,17 @@ export const stateSlice = createSlice({
   },
   extraReducers: (builder) => {
     // 进行请求阶段的一些操作
-    builder.addCase(getUserInfo.fulfilled, (state, action) => {
+    builder.addCase(_loginUser.fulfilled, (state, action) => {
       const data = action.payload.data.data
       state.info.token = data.token
       state.info.refreshToken = data.refreshToken
       localStorage_add('token', data.token)
       localStorage_add('refreshToken', data.refreshToken)
     })
-    builder.addCase(getUserInfo.pending, () => {
+    builder.addCase(_loginUser.pending, () => {
       console.log('登录 action pending')
     })
-    builder.addCase(getUserInfo.rejected, () => {
+    builder.addCase(_loginUser.rejected, () => {
       console.log('登录 action失败')
     })
     builder.addCase(getRegisterUser.fulfilled, (state, action) => {
@@ -83,6 +86,7 @@ export const stateSlice = createSlice({
       const menu = action.payload.data.data.menu
       state.info.menu = menu
     })
+    builder.addCase(getUserMenus.rejected, () => {})
   },
 })
 

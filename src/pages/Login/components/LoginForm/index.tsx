@@ -4,7 +4,7 @@ import styles from './index.module.scss'
 import { LockOutlined, UserOutlined } from '@ant-design/icons'
 import { LOginData } from '../../../../api/APItype'
 import { useAppDispatch, useAppSelector } from '../../../../redux/hook'
-import { getUserInfo } from '../../../../redux/slice'
+import { _loginUser } from '../../../../redux/slice'
 import { useEffect, useState } from 'react'
 import { success } from '../../../../api'
 import { useNavigate } from 'react-router-dom'
@@ -24,7 +24,7 @@ const LoginForm = (props: Prop_loginFomr) => {
   const onFinish = async (values: LOginData) => {
     try {
       setIsLogin(true)
-      await dispatch(getUserInfo(values))
+      await dispatch(_loginUser(values))
       setIsLogin(false)
       success('登录成功')
       navigate('/index')

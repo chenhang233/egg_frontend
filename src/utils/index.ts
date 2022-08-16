@@ -1,21 +1,26 @@
 import { Route } from '../api/APItype'
 
-export type TransformRoute = {
-  routerName: string
-  icon: string | null
-  routerSrc: string | null
-  auth: boolean
-  children: ChildrenRoute[]
-}
 type TOKEN = 'token' | 'refreshToken'
 
-type ChildrenRoute = keyof TransformRoute
-
-export const transformRouter = (
-  routes: Route[],
-  result: TransformRoute[] = []
-) => {
-  // const route = routes[0]
+export interface TransformRoute extends Route {
+  children?: TransformRoute[] | []
+}
+export const transformRouter = (routes: Route[], id: string | null) => {
+  if (!routes) {
+    return undefined
+  }
+  const fn = (routes: Route[], id: string | null): TransformRoute[] => {
+    let res: TransformRoute[] = []
+    routes.forEach((obj) => {
+      const newobj = { ...obj } as TransformRoute
+      if (newobj.parentId === id) {
+        newobj.children = fn(routes, newobj.rootId)
+        res.push(newobj)
+      }
+    })
+    return res
+  }
+  return fn(routes, id)
 }
 
 export const localStorage_clear = () => {

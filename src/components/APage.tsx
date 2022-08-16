@@ -1,7 +1,7 @@
 import { shallowEqual } from 'react-redux'
-import { getuserInfo } from '../api/user'
+import { loginUser } from '../api/user'
 import { useAppDispatch, useAppSelector } from '../redux/hook'
-import { add, minus, getUserInfo } from '../redux/slice'
+import { add, minus, _loginUser } from '../redux/slice'
 
 export const APage = () => {
   console.log('A渲染了')
@@ -29,14 +29,14 @@ export const APage = () => {
 
       <button
         onClick={() => {
-          dispatch(getUserInfo({ username: 'admin', password: '123456' }))
+          dispatch(_loginUser({ username: 'admin', password: '123456' }))
         }}
       >
         登录
       </button>
       <button
         onClick={() => {
-          getuserInfo({ username: 'admin', password: '123456' })
+          loginUser({ username: 'admin', password: '123456' })
         }}
       >
         api

@@ -24,6 +24,7 @@ export interface Route {
   icon: string | null
   routerSrc: string | null
   auth: boolean
+  uuid: stirng
 }
 export type Menu = {
   menuInfo: {

@@ -1,26 +1,55 @@
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 import { shallowEqual } from 'react-redux'
+import { Outlet } from 'react-router-dom'
 import { useAppDispatch, useAppSelector } from '../../redux/hook'
 import { getUserMenus } from '../../redux/slice'
-import { PieChartOutlined, TeamOutlined } from '@ant-design/icons'
+import {
+  PieChartOutlined,
+  TeamOutlined,
+  QuestionCircleOutlined,
+  SlackOutlined,
+  UnlockOutlined,
+  UserOutlined,
+} from '@ant-design/icons'
 import type { MenuProps } from 'antd'
 import { Breadcrumb, Layout, Menu } from 'antd'
 import React, { useState } from 'react'
 import styles from './Index.module.scss'
 import classNames from 'classnames'
+import { TransformRoute, transformRouter } from '../../utils/index'
+import { ItemType } from 'antd/lib/menu/hooks/useItems'
+
+type MenuItem = Required<MenuProps>['items'][number]
+type Menus = {
+  label: React.ReactNode
+  key: React.Key
+  icon?: React.ReactNode
+  children?: Menus[]
+}
 
 const Index = () => {
+  const routerArrRef = useRef<TransformRoute[] | undefined>(undefined)
   const dispatch = useAppDispatch()
   const { Header, Content, Footer, Sider } = Layout
-  const routers = useAppSelector((state) => state.user.info.menu, shallowEqual)
+  const routers = useAppSelector(
+    (state) => state.user.info.menu.router,
+    shallowEqual
+  )
+
+  routerArrRef.current = transformRouter(routers, null)
   const [collapsed, setCollapsed] = useState(false)
   useEffect(() => {
-    dispatch(getUserMenus())
+    const req = async () => {
+      try {
+        await dispatch(getUserMenus())
+      } catch (e) {
+        setTimeout(() => {
+          setCollapsed(true)
+        })
+      }
+    }
+    req()
   }, [dispatch])
-
-  console.log(routers, 'routers')
-
-  type MenuItem = Required<MenuProps>['items'][number]
 
   function getItem(
     label: React.ReactNode,
@@ -36,13 +65,67 @@ const Index = () => {
     } as MenuItem
   }
 
-  const items: MenuItem[] = [
-    getItem('首页', '1', <PieChartOutlined />),
-    getItem('个人', '2', <TeamOutlined />, [
-      getItem('角色管理', '3'),
-      getItem('权限管理', '4'),
-    ]),
-  ]
+  const getMenuItem = (
+    routerArr: TransformRoute[] | undefined
+  ): MenuItem[] | undefined => {
+    if (routerArr) {
+      return routerArr.map((obj) => {
+        let childrenArr: ItemType[] | undefined
+        if (obj.children) {
+          childrenArr = getMenuItem(obj.children) || undefined
+        }
+        let icon = <QuestionCircleOutlined />
+        switch (obj.icon) {
+          case 'PieChartOutlined':
+            icon = <PieChartOutlined />
+            break
+
+          case 'TeamOutlined':
+            icon = <TeamOutlined />
+            break
+          case 'SlackOutlined':
+            icon = <SlackOutlined />
+            break
+          case 'UnlockOutlined':
+            icon = <UnlockOutlined />
+            break
+          case 'UserOutlined':
+            icon = <UserOutlined />
+            break
+
+          default:
+            break
+        }
+        if (childrenArr && childrenArr?.length < 1) childrenArr = undefined
+        return getItem(obj.routerName, obj.uuid, icon, childrenArr)
+      })
+    }
+    return undefined
+  }
+  const items: MenuItem[] | undefined = getMenuItem(routerArrRef.current)
+  const MenuChange = (key: string, keyPath: string[]) => {
+    if (items) {
+      let myItem: Menus[] | undefined = [...items] as Menus[]
+      let currentItem: Menus | undefined
+
+      while (keyPath.length > 0) {
+        const n = keyPath[keyPath.length - 1]
+        // eslint-disable-next-line no-loop-func
+        currentItem = myItem.find((obj: Menus) => {
+          if (obj?.key === n) {
+            myItem = obj.children
+            return true
+          }
+          return false
+        })
+        keyPath.pop()
+        console.log(keyPath, 'keyPath')
+
+        // const item = items[]
+      }
+      console.log('dianj', key, keyPath, items, currentItem)
+    }
+  }
   return (
     <div className={classNames(styles.root)}>
       <Layout style={{ minHeight: '100vh' }}>
@@ -54,7 +137,11 @@ const Index = () => {
           <div className="logo" />
           <Menu
             theme="dark"
-            defaultSelectedKeys={['1']}
+            defaultSelectedKeys={['5']}
+            defaultOpenKeys={['0']}
+            onClick={({ item, key, keyPath, domEvent }) =>
+              MenuChange(key, keyPath)
+            }
             mode="inline"
             items={items}
           />
@@ -70,7 +157,7 @@ const Index = () => {
               className="site-layout-background"
               style={{ padding: 24, minHeight: 360 }}
             >
-              Bill is a cat.
+              <Outlet></Outlet>
             </div>
           </Content>
           <Footer style={{ textAlign: 'center' }}>

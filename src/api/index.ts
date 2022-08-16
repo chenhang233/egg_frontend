@@ -67,29 +67,25 @@ instance.interceptors.response.use(
     if (e.code === 'ECONNABORTED') {
       return error('远程主机拒绝网络连接')
     }
-    if (e.response?.status === 401) {
+    if (e.response && e.response.status === 401) {
       const refToken = localStorage_get('refreshToken')
-      const url = e.config.url
+      const config = e.config
+      const url = config.url
       if (refToken && url) {
-        getUserToken(`Bearer ${refToken}`)
-          .then((res) => {
-            const {
-              data: { message, data, code },
-            } = res
-            if (code === 0) {
-              localStorage_add('token', data.token)
-              instance.post(url, e.config.data, {
-                headers: { Authorization: `Bearer ${data.token}` },
-              })
-            } else {
-              history.replace('/login')
-              return error(message)
-            }
-          })
-          .catch((err) => {
-            console.log(err)
-            localStorage_clear()
-          })
+        try {
+          const {
+            data: { message, data, code },
+          } = await getUserToken(`Bearer ${refToken}`)
+          if (code === 0) {
+            localStorage_add('token', data.token)
+            return instance(config)
+          } else {
+            history.replace('/login')
+            return error(message)
+          }
+        } catch (error) {
+          localStorage_clear()
+        }
       } else {
         history.replace('/login')
         return error('未授权-或者' + e.response.data.message)
