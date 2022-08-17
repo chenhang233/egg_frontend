@@ -1,8 +1,9 @@
 import { useEffect, useRef } from 'react'
+import { shallowEqual } from 'react-redux'
+import { useAppSelector } from '../redux/hook'
+import { localStorage_clear, localStorage_get } from '../utils'
 
 export const useCheckTheme = (theme: 'default' | 'dark' = 'default') => {
-  console.log('zhix', theme)
-
   const ref = useRef<HTMLLinkElement>()
   useEffect(() => {
     ref.current && ref.current.remove()
@@ -11,4 +12,19 @@ export const useCheckTheme = (theme: 'default' | 'dark' = 'default') => {
     ref.current.href = `src/theme/${theme}.css`
     document.head.appendChild(ref.current)
   }, [theme])
+}
+
+export const useAuth = () => {
+  const { token, refreshToken } = useAppSelector(
+    (state) => state.user.info,
+    shallowEqual
+  )
+  if (
+    (!token || !refreshToken) &&
+    (!localStorage_get('token') || !localStorage_get('refreshToken'))
+  ) {
+    localStorage_clear()
+    return false
+  }
+  return true
 }

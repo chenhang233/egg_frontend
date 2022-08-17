@@ -4,6 +4,7 @@ import {
   MenusReturn,
   RefreshTokenReturn,
   RegisterReturn,
+  RolesReadReturn,
 } from './APItype'
 import http from './index'
 
@@ -19,3 +20,5 @@ export const getUserToken = (refreshToken: string) =>
   http.post<RefreshTokenReturn>('/users/getToken', {
     refreshToken: refreshToken,
   })
+
+export const getRolesread = () => http.post<RolesReadReturn>('/roles/read')

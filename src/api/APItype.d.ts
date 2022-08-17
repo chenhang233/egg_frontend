@@ -43,6 +43,13 @@ export interface LoginReduxData {
   menu: Menu
   userinfo: UserInfo
 }
+
+export interface Roles {
+  uuid: number
+  roleName: string
+  roleMark: string
+}
+
 export type LoginReturn = BASE_RETURN<{
   refreshToken: string
   token: string
@@ -54,3 +61,5 @@ export type RegisterReturn = BASE_RETURN<LOginData>
 export type MenusReturn = BASE_RETURN<{ menu: Menu }>
 
 export type RefreshTokenReturn = BASE_RETURN<{ token: string }>
+
+export type RolesReadReturn = BASE_RETURN<Roles[]>

@@ -27,7 +27,7 @@ const LoginForm = (props: Prop_loginFomr) => {
       await dispatch(_loginUser(values))
       setIsLogin(false)
       success('登录成功')
-      navigate('/index')
+      navigate('/')
     } catch (error) {
       setIsLogin(false)
     }

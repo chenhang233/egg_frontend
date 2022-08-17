@@ -9,7 +9,8 @@ export const store = configureStore({
     user: stateSlice,
     // other: otherSlice,
   },
-  // middleware: [thunkMiddleware],
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({ serializableCheck: false }),
   devTools: true,
 })
 

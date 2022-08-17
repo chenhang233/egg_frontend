@@ -1,23 +1,23 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import type { PayloadAction } from '@reduxjs/toolkit'
-import { loginUser, getUserMenu, registerUser } from '../api/user'
-import { LOginData, LoginReduxData } from '../api/APItype'
+import { loginUser, getUserMenu, registerUser, getRolesread } from '../api/user'
+import { LOginData, LoginReduxData, Roles } from '../api/APItype'
 import { localStorage_add } from '../utils'
 interface InitialState {
   info: LoginReduxData
-  count: number
+  Roles: Roles[]
   text: string
   theme: 'default' | 'dark'
 }
 
 const initialState: InitialState = {
-  count: 0,
-  text: '我是文字',
+  text: '文字test',
   info: {
     menu: {},
     userinfo: {},
   } as LoginReduxData,
   theme: 'default',
+  Roles: [],
 }
 
 export interface PromiseNum {
@@ -43,6 +43,10 @@ export const getUserMenus = createAsyncThunk('getUserMenus', async () => {
   const data = await getUserMenu()
   return data
 })
+export const getRolesRead = createAsyncThunk('getRolesRead', async () => {
+  const data = await getRolesread()
+  return data
+})
 
 export const stateSlice = createSlice({
   name: 'user',
@@ -50,18 +54,6 @@ export const stateSlice = createSlice({
   reducers: {
     changeTheme: (user, action: PayloadAction<'default' | 'dark'>) => {
       user.theme = action.payload
-    },
-    add: (state) => {
-      state.count += 1
-    },
-    minus: (state) => {
-      state.count -= 1
-    },
-    change: (state) => {
-      state.text = '我是改变了的文字'
-    },
-    back: (state) => {
-      state.text = '我是文字'
     },
   },
   extraReducers: (builder) => {
@@ -86,9 +78,12 @@ export const stateSlice = createSlice({
       const menu = action.payload.data.data.menu
       state.info.menu = menu
     })
-    builder.addCase(getUserMenus.rejected, () => {})
+    builder.addCase(getRolesRead.fulfilled, (state, action) => {
+      const routeArr = action.payload.data.data
+      state.Roles = routeArr
+    })
   },
 })
 
-export const { add, minus, change, back, changeTheme } = stateSlice.actions
+export const { changeTheme } = stateSlice.actions
 export default stateSlice.reducer

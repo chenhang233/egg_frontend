@@ -46,7 +46,7 @@ instance.interceptors.request.use(
     return Promise.reject(error)
   }
 )
-
+let errorArr: any[] = []
 // 添加响应拦截器
 instance.interceptors.response.use(
   function (response: AxiosResponse<BASE_RETURN<any>>) {
@@ -69,26 +69,23 @@ instance.interceptors.response.use(
     }
     if (e.response && e.response.status === 401) {
       const refToken = localStorage_get('refreshToken')
+      errorArr.push(refToken)
       const config = e.config
-      const url = config.url
-      if (refToken && url) {
-        try {
-          const {
-            data: { message, data, code },
-          } = await getUserToken(`Bearer ${refToken}`)
-          if (code === 0) {
-            localStorage_add('token', data.token)
-            return instance(config)
-          } else {
-            history.replace('/login')
-            return error(message)
-          }
-        } catch (error) {
-          localStorage_clear()
+      if (refToken && errorArr.length < 2) {
+        const {
+          data: { message, data, code },
+        } = await getUserToken(`Bearer ${refToken}`)
+        if (code === 0) {
+          localStorage_add('token', data.token)
+          return instance(config)
         }
-      } else {
         history.replace('/login')
-        return error('未授权-或者' + e.response.data.message)
+        return error(message)
+      } else {
+        localStorage_clear()
+        errorArr = []
+        history.replace('/login')
+        return error('未授权---' + e.response.data.message)
       }
     } else {
       error('未知响应错误')
