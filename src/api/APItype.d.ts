@@ -24,7 +24,7 @@ export interface Route {
   icon: string | null
   routerSrc: string | null
   auth: boolean
-  uuid: stirng
+  uuid: number
 }
 export type Menu = {
   menuInfo: {
@@ -47,8 +47,10 @@ export interface LoginReduxData {
 export interface Roles {
   uuid: number
   roleName: string
-  roleMark: string
+  roleMark?: string
 }
+
+export type AddRole = Omit<Roles, 'uuid'>
 
 export type LoginReturn = BASE_RETURN<{
   refreshToken: string
@@ -63,3 +65,7 @@ export type MenusReturn = BASE_RETURN<{ menu: Menu }>
 export type RefreshTokenReturn = BASE_RETURN<{ token: string }>
 
 export type RolesReadReturn = BASE_RETURN<Roles[]>
+
+export type AddRoleReturn = BASE_RETURN<[]>
+
+export type removeRoleReturn = BASE_RETURN<[]>

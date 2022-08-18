@@ -85,7 +85,7 @@ instance.interceptors.response.use(
         localStorage_clear()
         errorArr = []
         history.replace('/login')
-        return error('未授权---' + e.response.data.message)
+        return error(e.response.data.message)
       }
     } else {
       error('未知响应错误')

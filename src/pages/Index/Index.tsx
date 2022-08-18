@@ -1,7 +1,7 @@
-import { useCallback, useMemo, useRef } from 'react'
+import { useCallback, useRef } from 'react'
 import { shallowEqual } from 'react-redux'
 import { Outlet, useNavigate } from 'react-router-dom'
-import { useAppSelector } from '../../redux/hook'
+import { useAppDispatch, useAppSelector } from '../../redux/hook'
 import {
   PieChartOutlined,
   TeamOutlined,
@@ -10,13 +10,19 @@ import {
   UnlockOutlined,
   UserOutlined,
 } from '@ant-design/icons'
-import type { MenuProps } from 'antd'
+import { Button, MenuProps } from 'antd'
 import { Breadcrumb, Layout, Menu } from 'antd'
 import React, { useState } from 'react'
 import styles from './Index.module.scss'
 import classNames from 'classnames'
-import { TransformRoute, transformRouter } from '../../utils/index'
+import {
+  localStorage_clear,
+  TransformRoute,
+  transformRouter,
+} from '../../utils/index'
 import { ItemType } from 'antd/lib/menu/hooks/useItems'
+import { logout } from '../../redux/slice'
+import Modal from '../../components/Modal'
 
 type MenuItem = Required<MenuProps>['items'][number]
 // type Menus = {
@@ -30,12 +36,14 @@ const Index = () => {
   const routerArrRef = useRef<TransformRoute[] | undefined>(undefined)
   const { Header, Content, Footer, Sider } = Layout
   const navigate = useNavigate()
+  const dispatch = useAppDispatch()
+  const [collapsed, setCollapsed] = useState(false)
+  const [visible, setVisible] = useState(false)
   const routers = useAppSelector(
     (state) => state.user.info.menu.router,
     shallowEqual
   )
   routerArrRef.current = transformRouter(routers, null)
-  const [collapsed, setCollapsed] = useState(false)
 
   function getItem(
     label: React.ReactNode,
@@ -94,21 +102,31 @@ const Index = () => {
     []
   )
 
-  const items: MenuItem[] | undefined = useMemo(
-    () => getMenuItem(routerArrRef.current),
-    [getMenuItem]
-  )
+  const items: MenuItem[] | undefined = getMenuItem(routerArrRef.current)
   const MenuChange = (key: string, keyPath: string[]) => {
     if (routers) {
-      const routeObj = routers.find((obj) => obj.uuid === key)
+      const routeObj = routers.find((obj) => obj.uuid === +key)
       if (routeObj && routeObj.routerSrc) {
         navigate(routeObj.routerSrc)
       }
     }
   }
-
+  const loginOutOk = () => {
+    setVisible(false)
+    dispatch(logout(null))
+    localStorage_clear()
+    navigate('/login')
+  }
   return (
     <div className={classNames(styles.root)}>
+      <Modal
+        visible={visible}
+        handleOk={loginOutOk}
+        handleCancel={() => setVisible(false)}
+        title={'退出'}
+      >
+        <p>确认退出吗</p>
+      </Modal>
       <Layout style={{ minHeight: '100vh' }}>
         <Sider
           collapsible
@@ -129,7 +147,12 @@ const Index = () => {
           />
         </Sider>
         <Layout className="site-layout">
-          <Header className="site-layout-background" style={{ padding: 0 }} />
+          <Header className="site-layout-header" style={{ padding: 0 }}>
+            <section></section>
+            <Button type="primary" onClick={() => setVisible(true)}>
+              退出
+            </Button>
+          </Header>
           <Content style={{ margin: '0 16px' }}>
             <Breadcrumb style={{ margin: '16px 0' }}>
               <Breadcrumb.Item>User</Breadcrumb.Item>

@@ -1,9 +1,12 @@
 import {
+  AddRole,
+  AddRoleReturn,
   LOginData,
   LoginReturn,
   MenusReturn,
   RefreshTokenReturn,
   RegisterReturn,
+  removeRoleReturn,
   RolesReadReturn,
 } from './APItype'
 import http from './index'
@@ -22,3 +25,11 @@ export const getUserToken = (refreshToken: string) =>
   })
 
 export const getRolesread = () => http.post<RolesReadReturn>('/roles/read')
+
+export const setAddrole = (obj: AddRole) =>
+  http.post<AddRoleReturn>('/roles/add', obj)
+
+export const deleteRole = (uuid: number) =>
+  http.post<removeRoleReturn>('/roles/delete', { uuid })
+
+export const readAuth = (obj: any) => http.post('/authorization/readAuth', obj)

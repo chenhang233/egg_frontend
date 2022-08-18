@@ -10,7 +10,7 @@ interface InitialState {
   theme: 'default' | 'dark'
 }
 
-const initialState: InitialState = {
+export const initialState: InitialState = {
   text: '文字test',
   info: {
     menu: {},
@@ -55,6 +55,9 @@ export const stateSlice = createSlice({
     changeTheme: (user, action: PayloadAction<'default' | 'dark'>) => {
       user.theme = action.payload
     },
+    logout: (user, action) => {
+      user = action.payload
+    },
   },
   extraReducers: (builder) => {
     // 进行请求阶段的一些操作
@@ -85,5 +88,5 @@ export const stateSlice = createSlice({
   },
 })
 
-export const { changeTheme } = stateSlice.actions
+export const { changeTheme, logout } = stateSlice.actions
 export default stateSlice.reducer

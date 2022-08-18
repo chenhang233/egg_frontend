@@ -1,4 +1,4 @@
-import React, { Suspense, useEffect } from 'react'
+import React, { Suspense, useLayoutEffect } from 'react'
 import classNames from 'classnames'
 import styles from './App.module.scss'
 import { Routes, Route, Navigate } from 'react-router-dom'
@@ -20,7 +20,7 @@ const PermissionManage = React.lazy(
 function App() {
   const dispatch = useAppDispatch()
   const auth = useAuth()
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (auth) {
       dispatch(getUserMenus())
     }
