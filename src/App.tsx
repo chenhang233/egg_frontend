@@ -46,21 +46,21 @@ function App() {
   return (
     <div className={classNames(styles.root)}>
       <Suspense fallback={<div>...</div>}>
-        <Routes>
-          <Route
-            path="/"
-            element={
-              <PrivateRoute>
-                <Index />
-              </PrivateRoute>
-            }
-          >
+        {routers && (
+          <Routes>
             <Route
               path="/"
-              element={<Navigate to={'/dashboard/workbench'} />}
-            ></Route>
-            {routers &&
-              routers
+              element={
+                <PrivateRoute>
+                  <Index />
+                </PrivateRoute>
+              }
+            >
+              <Route
+                path="/"
+                element={<Navigate to={'/dashboard/workbench'} />}
+              ></Route>
+              {routers
                 .filter((obj) => obj.auth && obj.routerSrc)
                 .map((obj) => (
                   <Route
@@ -69,10 +69,11 @@ function App() {
                     element={getRouteTransform(obj.routerSrc as string)}
                   ></Route>
                 ))}
-          </Route>
-          <Route path="/login" element={<Login />}></Route>
-          <Route path="*" element={<NotFound />} />
-        </Routes>
+            </Route>
+            <Route path="/login" element={<Login />}></Route>
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        )}
       </Suspense>
     </div>
   )

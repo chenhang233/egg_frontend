@@ -4,6 +4,8 @@ import {
   LOginData,
   LoginReturn,
   MenusReturn,
+  readAuthData,
+  readAuthReturn,
   RefreshTokenReturn,
   RegisterReturn,
   removeRoleReturn,
@@ -32,4 +34,5 @@ export const setAddrole = (obj: AddRole) =>
 export const deleteRole = (uuid: number) =>
   http.post<removeRoleReturn>('/roles/delete', { uuid })
 
-export const readAuth = (obj: any) => http.post('/authorization/readAuth', obj)
+export const readAuth = (obj: readAuthData) =>
+  http.post<readAuthReturn>('/authorization/readAuth', obj)

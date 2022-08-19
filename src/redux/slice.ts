@@ -1,11 +1,25 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import type { PayloadAction } from '@reduxjs/toolkit'
-import { loginUser, getUserMenu, registerUser, getRolesread } from '../api/user'
-import { LOginData, LoginReduxData, Roles } from '../api/APItype'
+import {
+  loginUser,
+  getUserMenu,
+  registerUser,
+  getRolesread,
+  readAuth,
+} from '../api/user'
+import {
+  Condition_1,
+  Condition_2,
+  LOginData,
+  LoginReduxData,
+  Roles,
+} from '../api/APItype'
 import { localStorage_add } from '../utils'
 interface InitialState {
   info: LoginReduxData
   Roles: Roles[]
+  interfaceAuth: Condition_1[]
+  routerAuth: Condition_2[]
   text: string
   theme: 'default' | 'dark'
 }
@@ -18,6 +32,8 @@ export const initialState: InitialState = {
   } as LoginReduxData,
   theme: 'default',
   Roles: [],
+  interfaceAuth: [],
+  routerAuth: [],
 }
 
 export interface PromiseNum {
@@ -47,6 +63,27 @@ export const getRolesRead = createAsyncThunk('getRolesRead', async () => {
   const data = await getRolesread()
   return data
 })
+
+export const getRoleConditionRead = createAsyncThunk(
+  'getRoleConditionRead',
+  async (payload: { condition: 'R' | 'I'; uuid?: number; roleP?: Roles[] }) => {
+    let { uuid, roleP, condition } = payload
+    let roleArr = null
+    if (!uuid) {
+      if (!roleP) {
+        const roles = await getRolesread()
+        roleArr = roles.data.data as Roles[]
+        uuid = roleArr[0].uuid
+      } else {
+        uuid = roleP[0].uuid
+      }
+    }
+    const {
+      data: { data },
+    } = await readAuth({ uuid, condition })
+    return { roles: roleArr, data: data }
+  }
+)
 
 export const stateSlice = createSlice({
   name: 'user',
@@ -84,6 +121,19 @@ export const stateSlice = createSlice({
     builder.addCase(getRolesRead.fulfilled, (state, action) => {
       const routeArr = action.payload.data.data
       state.Roles = routeArr
+    })
+    builder.addCase(getRoleConditionRead.fulfilled, (state, action) => {
+      const c = action.meta.arg.condition
+      const { roles, data } = action.payload
+      if (roles) {
+        state.Roles = roles
+      }
+      if (c === 'I') {
+        state.interfaceAuth = data as Condition_1[]
+      }
+      if (c === 'R') {
+        state.routerAuth = data as Condition_2[]
+      }
     })
   },
 })

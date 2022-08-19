@@ -22,7 +22,7 @@ export interface Route {
   rootId: string
   parentId: string | null
   icon: string | null
-  routerSrc: string | null
+  routerSrc: string | undefined
   auth: boolean
   uuid: number
 }
@@ -44,6 +44,10 @@ export interface LoginReduxData {
   userinfo: UserInfo
 }
 
+export interface readAuthData {
+  uuid: number
+  condition: 'R' | 'I'
+}
 export interface Roles {
   uuid: number
   roleName: string
@@ -58,6 +62,17 @@ export type LoginReturn = BASE_RETURN<{
   // userinfo: UserInfo
 }>
 
+interface Condition_1 {
+  uuid: number
+  name: string
+  url: string
+  auth: boolean
+  [key: string]: any
+}
+interface Condition_2 extends Route {
+  children: Condition_2[]
+  [key: string]: any
+}
 export type RegisterReturn = BASE_RETURN<LOginData>
 
 export type MenusReturn = BASE_RETURN<{ menu: Menu }>
@@ -69,3 +84,5 @@ export type RolesReadReturn = BASE_RETURN<Roles[]>
 export type AddRoleReturn = BASE_RETURN<[]>
 
 export type removeRoleReturn = BASE_RETURN<[]>
+
+export type readAuthReturn = BASE_RETURN<Condition_1[] | Condition_2[]>

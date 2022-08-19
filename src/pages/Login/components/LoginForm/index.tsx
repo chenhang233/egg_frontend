@@ -7,7 +7,7 @@ import { useAppDispatch, useAppSelector } from '../../../../redux/hook'
 import { _loginUser } from '../../../../redux/slice'
 import { useEffect, useState } from 'react'
 import { success } from '../../../../api'
-import { useNavigate } from 'react-router-dom'
+import { Location, useLocation, useNavigate } from 'react-router-dom'
 import Loading from '../../../../components/Loading'
 import { shallowEqual } from 'react-redux'
 
@@ -15,19 +15,25 @@ interface Prop_loginFomr {
   changeIsLogin: () => void
   initialValues?: LOginData
 }
+interface Type {
+  from?: Location
+}
 
 const LoginForm = (props: Prop_loginFomr) => {
   const dispatch = useAppDispatch()
   const theme = useAppSelector((state) => state.user.theme, shallowEqual)
   const [isLogin, setIsLogin] = useState(false)
   const navigate = useNavigate()
+  const location = useLocation()
   const onFinish = async (values: LOginData) => {
     try {
       setIsLogin(true)
       await dispatch(_loginUser(values))
       setIsLogin(false)
       success('登录成功')
-      navigate('/')
+      const state = location.state as Type
+
+      state?.from ? navigate(state.from.pathname) : navigate('/')
     } catch (error) {
       setIsLogin(false)
     }

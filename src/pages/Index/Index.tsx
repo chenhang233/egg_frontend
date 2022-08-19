@@ -1,6 +1,6 @@
 import { useCallback, useRef } from 'react'
 import { shallowEqual } from 'react-redux'
-import { Outlet, useNavigate } from 'react-router-dom'
+import { Outlet, useLocation, useNavigate } from 'react-router-dom'
 import { useAppDispatch, useAppSelector } from '../../redux/hook'
 import {
   PieChartOutlined,
@@ -25,17 +25,19 @@ import { logout } from '../../redux/slice'
 import Modal from '../../components/Modal'
 
 type MenuItem = Required<MenuProps>['items'][number]
-// type Menus = {
-//   label: React.ReactNode
-//   key: React.Key
-//   icon?: React.ReactNode
-//   children?: Menus[]
-// }
+type Menus_AS = {
+  label: React.ReactNode
+  key: React.Key
+  icon?: React.ReactNode
+  children?: Menus_AS[]
+  path?: string
+}
 
 const Index = () => {
   const routerArrRef = useRef<TransformRoute[] | undefined>(undefined)
   const { Header, Content, Footer, Sider } = Layout
   const navigate = useNavigate()
+  const location = useLocation()
   const dispatch = useAppDispatch()
   const [collapsed, setCollapsed] = useState(false)
   const [visible, setVisible] = useState(false)
@@ -49,13 +51,15 @@ const Index = () => {
     label: React.ReactNode,
     key: React.Key,
     icon?: React.ReactNode,
-    children?: MenuItem[]
+    children?: MenuItem[],
+    path?: string
   ): MenuItem {
     return {
       key,
       icon,
       children,
       label,
+      path,
     } as MenuItem
   }
   const getMenuItem = useCallback(
@@ -71,7 +75,6 @@ const Index = () => {
             case 'PieChartOutlined':
               icon = <PieChartOutlined />
               break
-
             case 'TeamOutlined':
               icon = <TeamOutlined />
               break
@@ -84,13 +87,18 @@ const Index = () => {
             case 'UserOutlined':
               icon = <UserOutlined />
               break
-
             default:
               break
           }
           if (childrenArr && childrenArr?.length < 1) childrenArr = undefined
           if (obj.auth) {
-            return getItem(obj.routerName, obj.uuid, icon, childrenArr)
+            return getItem(
+              obj.routerName,
+              obj.uuid,
+              icon,
+              childrenArr,
+              obj.routerSrc
+            )
           } else {
             return null
           }
@@ -115,7 +123,47 @@ const Index = () => {
     setVisible(false)
     dispatch(logout(null))
     localStorage_clear()
-    navigate('/login')
+    navigate('/login', { state: { from: location } })
+  }
+  const computedDefaultSelectKeys = () => {
+    if (location.pathname && items) {
+      const key = routers.find(
+        (obj) => obj.routerSrc === location.pathname.substring(1)
+      )!.uuid
+      return [key.toString()]
+    }
+    return ['5']
+  }
+  const computedDefaulOpenKeys = () => {
+    if (location.pathname && items) {
+      let children = routers.find(
+        (obj) => obj.routerSrc === location.pathname.substring(1)
+      )
+      const fn = (items: MenuItem[]): string[] => {
+        for (let i = 0; i < items.length; i++) {
+          let temp = []
+          let item = items[i] as Menus_AS
+          temp.push(String(item.key))
+          if (item.children) {
+            const t = fn(item.children)
+            if (t.length > 0) {
+              temp = temp.concat(...t)
+              return temp
+            }
+          } else {
+            if (item.key === children!.uuid) {
+              return temp
+            } else {
+              continue
+            }
+          }
+        }
+        return []
+      }
+      return fn(items)
+    } else {
+      return ['0']
+    }
   }
   return (
     <div className={classNames(styles.root)}>
@@ -137,8 +185,8 @@ const Index = () => {
           <Menu
             style={{ minWidth: 0, flex: 'auto' }}
             theme="dark"
-            defaultSelectedKeys={['5']}
-            defaultOpenKeys={['0']}
+            defaultSelectedKeys={computedDefaultSelectKeys()}
+            defaultOpenKeys={computedDefaulOpenKeys()}
             onSelect={({ item, key, keyPath, domEvent }) =>
               MenuChange(key, keyPath)
             }

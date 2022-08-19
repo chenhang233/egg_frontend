@@ -13,9 +13,9 @@ import { error, success } from '../../../../api'
 
 const { Column } = Table
 const columnArr = [
-  { title: '角色id', dataIndex: 'uuid', key: 0 },
-  { title: '角色名称', dataIndex: 'roleName', key: 1 },
-  { title: '角色描述', dataIndex: 'roleMark', key: 2 },
+  { title: '角色id', dataIndex: 'uuid' },
+  { title: '角色名称', dataIndex: 'roleName' },
+  { title: '角色描述', dataIndex: 'roleMark' },
 ]
 const RoleManage = () => {
   const [type, setType] = useState<'add' | 'delete'>('add')
@@ -130,8 +130,8 @@ const RoleManage = () => {
         </Button>
       </Row>
       <Table dataSource={Roles.map((obj) => ({ key: obj.uuid, ...obj }))}>
-        {columnArr.map(({ key, title, dataIndex }) => (
-          <Column key={key} title={title} dataIndex={dataIndex}></Column>
+        {columnArr.map(({ title, dataIndex }) => (
+          <Column title={title} dataIndex={dataIndex}></Column>
         ))}
         <Column
           title="操作"
