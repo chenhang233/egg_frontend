@@ -44,10 +44,7 @@ const RoleManage = () => {
         } = await setAddrole(value)
         if (code === 1) return error(message)
         if (code === 0) {
-          setVisible(false)
-          setConfirmLoading(false)
-          success('添加成功')
-          dispatch(getRolesRead())
+          handleOkAfter('添加成功')
           Ref.resetFields()
         }
       } catch (e) {
@@ -62,16 +59,19 @@ const RoleManage = () => {
         } = await deleteRole(UUID)
         if (code === 1) return error(message)
         if (code === 0) {
-          setVisible(false)
-          setConfirmLoading(false)
-          success('删除成功')
-          dispatch(getRolesRead())
+          handleOkAfter('删除成功')
         }
       } catch (e) {
         setConfirmLoading(false)
         error(`ERROR ${JSON.stringify(e)}`)
       }
     }
+  }
+  const handleOkAfter = (msg: string) => {
+    setVisible(false)
+    setConfirmLoading(false)
+    success(msg)
+    dispatch(getRolesRead())
   }
   const deleteRow = async ({ uuid }: Roles) => {
     setType('delete')
@@ -129,9 +129,12 @@ const RoleManage = () => {
           添加角色
         </Button>
       </Row>
-      <Table dataSource={Roles.map((obj) => ({ key: obj.uuid, ...obj }))}>
+      <Table
+        dataSource={Roles.map((obj) => ({ key: obj.uuid, ...obj }))}
+        rowKey={(record) => record.uuid}
+      >
         {columnArr.map(({ title, dataIndex }) => (
-          <Column title={title} dataIndex={dataIndex}></Column>
+          <Column title={title} dataIndex={dataIndex} key={dataIndex}></Column>
         ))}
         <Column
           title="操作"

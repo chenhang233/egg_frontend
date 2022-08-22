@@ -10,6 +10,10 @@ import {
   RegisterReturn,
   removeRoleReturn,
   RolesReadReturn,
+  SingleInterface,
+  SingleInterfaceReturn,
+  SingleRouter,
+  SingleRouterReturn,
 } from './APItype'
 import http from './index'
 
@@ -36,3 +40,15 @@ export const deleteRole = (uuid: number) =>
 
 export const readAuth = (obj: readAuthData) =>
   http.post<readAuthReturn>('/authorization/readAuth', obj)
+
+export const removeRouter = (obj: SingleRouter) =>
+  http.post<SingleRouterReturn>('/authorization/removeRouter', obj)
+
+export const addRouter = (obj: SingleRouter) =>
+  http.post<SingleRouterReturn>('/authorization/addRouter', obj)
+
+export const removeInterFace = (obj: SingleInterface) =>
+  http.post<SingleInterfaceReturn>('/authorization/removeInterFace', obj)
+
+export const addInterface = (obj: SingleInterface) =>
+  http.post<SingleInterfaceReturn>('/authorization/addInterface', obj)

@@ -32,7 +32,6 @@ const LoginForm = (props: Prop_loginFomr) => {
       setIsLogin(false)
       success('登录成功')
       const state = location.state as Type
-
       state?.from ? navigate(state.from.pathname) : navigate('/')
     } catch (error) {
       setIsLogin(false)

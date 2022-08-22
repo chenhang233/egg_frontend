@@ -48,6 +48,14 @@ export interface readAuthData {
   uuid: number
   condition: 'R' | 'I'
 }
+export interface SingleRouter {
+  uuid: number
+  routerId: number
+}
+export interface SingleInterface {
+  uuid: number
+  interfaceId: number
+}
 export interface Roles {
   uuid: number
   roleName: string
@@ -70,7 +78,7 @@ interface Condition_1 {
   [key: string]: any
 }
 interface Condition_2 extends Route {
-  children: Condition_2[]
+  children?: Condition_2[]
   [key: string]: any
 }
 export type RegisterReturn = BASE_RETURN<LOginData>
@@ -86,3 +94,7 @@ export type AddRoleReturn = BASE_RETURN<[]>
 export type removeRoleReturn = BASE_RETURN<[]>
 
 export type readAuthReturn = BASE_RETURN<Condition_1[] | Condition_2[]>
+
+export type SingleRouterReturn = BASE_RETURN<[]>
+
+export type SingleInterfaceReturn = BASE_RETURN<[]>

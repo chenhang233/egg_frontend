@@ -14,7 +14,7 @@ import {
   LoginReduxData,
   Roles,
 } from '../api/APItype'
-import { localStorage_add } from '../utils'
+import { localStorage_add, localStorage_clear } from '../utils'
 interface InitialState {
   info: LoginReduxData
   Roles: Roles[]
@@ -93,6 +93,7 @@ export const stateSlice = createSlice({
       user.theme = action.payload
     },
     logout: (user, action) => {
+      localStorage_clear()
       user = action.payload
     },
   },

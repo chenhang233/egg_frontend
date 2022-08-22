@@ -15,12 +15,9 @@ export const useCheckTheme = (theme: 'default' | 'dark' = 'default') => {
 }
 
 export const useAuth = () => {
-  const { token, refreshToken } = useAppSelector(
-    (state) => state.user.info,
-    shallowEqual
-  )
+  const { token } = useAppSelector((state) => state.user.info, shallowEqual)
   if (
-    (!token || !refreshToken) &&
+    !token &&
     (!localStorage_get('token') || !localStorage_get('refreshToken'))
   ) {
     localStorage_clear()

@@ -2,27 +2,16 @@ import { useCallback, useRef } from 'react'
 import { shallowEqual } from 'react-redux'
 import { Outlet, useLocation, useNavigate } from 'react-router-dom'
 import { useAppDispatch, useAppSelector } from '../../redux/hook'
-import {
-  PieChartOutlined,
-  TeamOutlined,
-  QuestionCircleOutlined,
-  SlackOutlined,
-  UnlockOutlined,
-  UserOutlined,
-} from '@ant-design/icons'
 import { Button, MenuProps } from 'antd'
 import { Breadcrumb, Layout, Menu } from 'antd'
 import React, { useState } from 'react'
 import styles from './Index.module.scss'
 import classNames from 'classnames'
-import {
-  localStorage_clear,
-  TransformRoute,
-  transformRouter,
-} from '../../utils/index'
+import { TransformRoute, transformRouter } from '../../utils/index'
 import { ItemType } from 'antd/lib/menu/hooks/useItems'
 import { logout } from '../../redux/slice'
 import Modal from '../../components/Modal'
+import { transformIconStringToJSX } from '../../utils/enum'
 
 type MenuItem = Required<MenuProps>['items'][number]
 type Menus_AS = {
@@ -70,26 +59,7 @@ const Index = () => {
           if (obj.children) {
             childrenArr = getMenuItem(obj.children)
           }
-          let icon = <QuestionCircleOutlined />
-          switch (obj.icon) {
-            case 'PieChartOutlined':
-              icon = <PieChartOutlined />
-              break
-            case 'TeamOutlined':
-              icon = <TeamOutlined />
-              break
-            case 'SlackOutlined':
-              icon = <SlackOutlined />
-              break
-            case 'UnlockOutlined':
-              icon = <UnlockOutlined />
-              break
-            case 'UserOutlined':
-              icon = <UserOutlined />
-              break
-            default:
-              break
-          }
+          let icon = transformIconStringToJSX(obj.icon)
           if (childrenArr && childrenArr?.length < 1) childrenArr = undefined
           if (obj.auth) {
             return getItem(
@@ -122,7 +92,6 @@ const Index = () => {
   const loginOutOk = () => {
     setVisible(false)
     dispatch(logout(null))
-    localStorage_clear()
     navigate('/login', { state: { from: location } })
   }
   const computedDefaultSelectKeys = () => {

@@ -1,5 +1,4 @@
 import { Route } from '../api/APItype'
-
 type TOKEN = 'token' | 'refreshToken'
 
 export interface TransformRoute extends Route {
