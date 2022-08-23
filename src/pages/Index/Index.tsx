@@ -9,7 +9,7 @@ import styles from './Index.module.scss'
 import classNames from 'classnames'
 import { TransformRoute, transformRouter } from '../../utils/index'
 import { ItemType } from 'antd/lib/menu/hooks/useItems'
-import { logout } from '../../redux/slice'
+import { getUserMenus, logout } from '../../redux/slice'
 import Modal from '../../components/Modal'
 import { transformIconStringToJSX } from '../../utils/enum'
 
@@ -34,6 +34,10 @@ const Index = () => {
     (state) => state.user.info.menu.router,
     shallowEqual
   )
+  // console.log(routers, 'routers')
+  if (!routers?.length) {
+    dispatch(getUserMenus())
+  }
   routerArrRef.current = transformRouter(routers, null)
 
   function getItem(
@@ -86,6 +90,8 @@ const Index = () => {
       const routeObj = routers.find((obj) => obj.uuid === +key)
       if (routeObj && routeObj.routerSrc) {
         navigate(routeObj.routerSrc)
+        keyPath.reverse()
+        setDefaultBreadcrumb(computedDefaultBreadcrumb(keyPath))
       }
     }
   }
@@ -134,6 +140,21 @@ const Index = () => {
       return ['0']
     }
   }
+  const [defaultOpenKeys] = useState(computedDefaulOpenKeys())
+  const computedDefaultBreadcrumb = (OpenKeys: string[]) => {
+    const strArr = [...OpenKeys]
+    strArr.forEach(
+      (strNum, index) =>
+        (strArr[index] = routers.find(
+          (obj) => obj.uuid === +strNum
+        )!.routerName)
+    )
+    return strArr
+  }
+  const [defaultBreadcrumb, setDefaultBreadcrumb] = useState(
+    computedDefaultBreadcrumb(defaultOpenKeys)
+  )
+
   return (
     <div className={classNames(styles.root)}>
       <Modal
@@ -155,7 +176,7 @@ const Index = () => {
             style={{ minWidth: 0, flex: 'auto' }}
             theme="dark"
             defaultSelectedKeys={computedDefaultSelectKeys()}
-            defaultOpenKeys={computedDefaulOpenKeys()}
+            defaultOpenKeys={defaultOpenKeys}
             onSelect={({ item, key, keyPath, domEvent }) =>
               MenuChange(key, keyPath)
             }
@@ -172,8 +193,9 @@ const Index = () => {
           </Header>
           <Content style={{ margin: '0 16px' }}>
             <Breadcrumb style={{ margin: '16px 0' }}>
-              <Breadcrumb.Item>User</Breadcrumb.Item>
-              <Breadcrumb.Item>Bill</Breadcrumb.Item>
+              {defaultBreadcrumb.map((str) => (
+                <Breadcrumb.Item key={str}>{str}</Breadcrumb.Item>
+              ))}
             </Breadcrumb>
             <div
               className="site-layout-background"

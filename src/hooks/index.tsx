@@ -25,3 +25,12 @@ export const useAuth = () => {
   }
   return true
 }
+
+export const useIsLogin = () => {
+  const isLogin = useAppSelector((state) => state.user.isLogin)
+  const local = JSON.parse(localStorage_get('isLogin') || 'false') as boolean
+  if (!isLogin && !local) {
+    return false
+  }
+  return true
+}

@@ -47,16 +47,21 @@ instance.interceptors.request.use(
   }
 )
 let errorArr: any[] = []
+const notHandleInterface = ['/users/getUserMenus']
 // 添加响应拦截器
 instance.interceptors.response.use(
   function (response: AxiosResponse<BASE_RETURN<any>>) {
     // 对响应数据做点什么
     if (response.status === 200) {
       const res = response.data
+      const url = response.config.url || ''
       if (res.code === 1) {
         const token = localStorage_get('token')
         if (!token) {
           history.push('/login')
+        }
+        if (notHandleInterface.includes(url)) {
+          return res
         }
         return error(res.message)
       }
@@ -73,7 +78,7 @@ instance.interceptors.response.use(
       const config = e.config
       if (refToken && errorArr.length < 2) {
         const {
-          data: { message, data, code },
+          data: { data, code, message },
         } = await getUserToken(`Bearer ${refToken}`)
         if (code === 0) {
           localStorage_add('token', data.token)

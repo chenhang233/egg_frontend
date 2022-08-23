@@ -1,5 +1,5 @@
 import { Route } from '../api/APItype'
-type TOKEN = 'token' | 'refreshToken'
+type TOKEN = 'token' | 'refreshToken' | 'isLogin'
 
 export interface TransformRoute extends Route {
   children?: TransformRoute[] | []

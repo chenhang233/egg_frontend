@@ -60,6 +60,7 @@ export interface Roles {
   uuid: number
   roleName: string
   roleMark?: string
+  canDelete: boolean
 }
 
 export type AddRole = Omit<Roles, 'uuid'>

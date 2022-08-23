@@ -1,4 +1,13 @@
-import { Button, Form, FormInstance, Input, Row, Space, Table } from 'antd'
+import {
+  Button,
+  Form,
+  FormInstance,
+  Input,
+  PaginationProps,
+  Row,
+  Space,
+  Table,
+} from 'antd'
 import { useEffect, useState } from 'react'
 import { shallowEqual } from 'react-redux'
 import { AddRole, Roles } from '../../../../api/APItype'
@@ -51,7 +60,8 @@ const RoleManage = () => {
         setConfirmLoading(false)
       }
     }
-    if (type === 'delete' && UUID) {
+
+    if (type === 'delete' && (UUID || UUID === 0)) {
       try {
         setConfirmLoading(true)
         const {
@@ -63,6 +73,7 @@ const RoleManage = () => {
         }
       } catch (e) {
         setConfirmLoading(false)
+        setVisible(false)
         error(`ERROR ${JSON.stringify(e)}`)
       }
     }
@@ -81,6 +92,13 @@ const RoleManage = () => {
   const addRole = () => {
     setType('add')
     setVisible(true)
+  }
+
+  const onShowSizeChange: PaginationProps['onShowSizeChange'] = (
+    current,
+    pageSize
+  ) => {
+    console.log(current, pageSize)
   }
   return (
     <main className={classNames(styles.root)}>
@@ -130,6 +148,13 @@ const RoleManage = () => {
         </Button>
       </Row>
       <Table
+        pagination={{
+          total: Roles.length,
+          showSizeChanger: true,
+          onShowSizeChange,
+          pageSizeOptions: [5, 10, 20, 50],
+          defaultPageSize: 5,
+        }}
         dataSource={Roles.map((obj) => ({ key: obj.uuid, ...obj }))}
         rowKey={(record) => record.uuid}
       >
@@ -141,7 +166,11 @@ const RoleManage = () => {
           key="action"
           render={(_: any, record: Roles) => (
             <Space size="middle">
-              <Button type="dashed" onClick={() => deleteRow(record)}>
+              <Button
+                type="dashed"
+                onClick={() => deleteRow(record)}
+                disabled={!record.canDelete}
+              >
                 删除
               </Button>
             </Space>

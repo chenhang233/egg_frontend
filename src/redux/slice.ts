@@ -22,6 +22,7 @@ interface InitialState {
   routerAuth: Condition_2[]
   text: string
   theme: 'default' | 'dark'
+  isLogin: boolean
 }
 
 export const initialState: InitialState = {
@@ -34,6 +35,7 @@ export const initialState: InitialState = {
   Roles: [],
   interfaceAuth: [],
   routerAuth: [],
+  isLogin: false,
 }
 
 export interface PromiseNum {
@@ -94,7 +96,13 @@ export const stateSlice = createSlice({
     },
     logout: (user, action) => {
       localStorage_clear()
-      user = action.payload
+      user.info.menu.router = action.payload
+      user.info.menu.menuInfo = action.payload
+      user.isLogin = false
+    },
+    loginChange: (state) => {
+      state.isLogin = true
+      localStorage_add('isLogin', 'true')
     },
   },
   extraReducers: (builder) => {
@@ -139,5 +147,5 @@ export const stateSlice = createSlice({
   },
 })
 
-export const { changeTheme, logout } = stateSlice.actions
+export const { changeTheme, logout, loginChange } = stateSlice.actions
 export default stateSlice.reducer
