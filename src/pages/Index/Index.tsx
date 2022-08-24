@@ -101,7 +101,7 @@ const Index = () => {
     navigate('/login', { state: { from: location } })
   }
   const computedDefaultSelectKeys = () => {
-    if (location.pathname && items) {
+    if (routers && location.pathname && items) {
       const key = routers.find(
         (obj) => obj.routerSrc === location.pathname.substring(1)
       )!.uuid
@@ -110,7 +110,7 @@ const Index = () => {
     return ['5']
   }
   const computedDefaulOpenKeys = () => {
-    if (location.pathname && items) {
+    if (routers && location.pathname && items) {
       let children = routers.find(
         (obj) => obj.routerSrc === location.pathname.substring(1)
       )
@@ -145,7 +145,7 @@ const Index = () => {
     const strArr = [...OpenKeys]
     strArr.forEach(
       (strNum, index) =>
-        (strArr[index] = routers.find(
+        (strArr[index] = routers?.find(
           (obj) => obj.uuid === +strNum
         )!.routerName)
     )
