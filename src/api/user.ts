@@ -14,6 +14,7 @@ import {
   SingleInterfaceReturn,
   SingleRouter,
   SingleRouterReturn,
+  VisitNumberReturn,
 } from './APItype'
 import http from './index'
 
@@ -52,3 +53,6 @@ export const removeInterFace = (obj: SingleInterface) =>
 
 export const addInterface = (obj: SingleInterface) =>
   http.post<SingleInterfaceReturn>('/authorization/addInterface', obj)
+
+export const visitNum = () =>
+  http.get<VisitNumberReturn>('/dashboard/visitNumbers')

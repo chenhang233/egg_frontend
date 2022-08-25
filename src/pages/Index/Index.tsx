@@ -199,7 +199,7 @@ const Index = () => {
             </Breadcrumb>
             <div
               className="site-layout-background"
-              style={{ padding: 24, minHeight: 360 }}
+              style={{ padding: 24, minHeight: 500 }}
             >
               <Outlet></Outlet>
             </div>

@@ -10,6 +10,7 @@ import Workbench from './pages/Index/pages/Workbench'
 import PrivateRoute from './components/private'
 import Index from './pages/Index/Index'
 import { useAuth, useIsLogin } from './hooks'
+import Fallback from './pages/Fallback'
 
 const Login = React.lazy(() => import('./pages/Login'))
 const RoleManage = React.lazy(() => import('./pages/Index/pages/RoleManage'))
@@ -59,7 +60,7 @@ function App() {
   }
   const NoAuthRouter = () => {
     return (
-      <Suspense fallback={<div>...</div>}>
+      <Suspense fallback={<Fallback></Fallback>}>
         <Routes>
           <Route
             path="/"
@@ -71,7 +72,7 @@ function App() {
           ></Route>
           <Route path="/login" element={<Login />}></Route>
           <Route path="/test" element={<Test />} />
-          <Route path="/*" element={<NotFound />} />
+          <Route path="/*" element={<Fallback></Fallback>} />
         </Routes>
       </Suspense>
     )
@@ -79,7 +80,7 @@ function App() {
   return (
     <div className={classNames(styles.root)}>
       {routers ? (
-        <Suspense fallback={<div>...</div>}>
+        <Suspense fallback={<Fallback></Fallback>}>
           <Routes>
             <Route
               path="/"

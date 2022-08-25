@@ -82,6 +82,12 @@ interface Condition_2 extends Route {
   children?: Condition_2[]
   [key: string]: any
 }
+
+interface Visit_obj {
+  loginTime: string
+  logoutTime: string | null
+  username: string
+}
 export type RegisterReturn = BASE_RETURN<LOginData>
 
 export type MenusReturn = BASE_RETURN<{ menu: Menu }>
@@ -99,3 +105,8 @@ export type readAuthReturn = BASE_RETURN<Condition_1[] | Condition_2[]>
 export type SingleRouterReturn = BASE_RETURN<[]>
 
 export type SingleInterfaceReturn = BASE_RETURN<[]>
+
+export type VisitNumberReturn = BASE_RETURN<{
+  details: Visit_obj[]
+  count: number
+}>
