@@ -11,6 +11,8 @@ import {
   AuditOutlined,
   AreaChartOutlined,
   ReadOutlined,
+  BankOutlined,
+  MehOutlined,
 } from '@ant-design/icons'
 
 export const transformIconStringToJSX = (name: string | null) => {
@@ -48,6 +50,12 @@ export const transformIconStringToJSX = (name: string | null) => {
       break
     case 'CloseCircleOutlined':
       icon = <CloseCircleOutlined />
+      break
+    case 'BankOutlined':
+      icon = <BankOutlined />
+      break
+    case 'MehOutlined':
+      icon = <MehOutlined />
       break
     default:
       break

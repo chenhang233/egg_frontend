@@ -1,8 +1,11 @@
 import {
   AddRole,
   AddRoleReturn,
+  getUserInfoReturn,
   LOginData,
   LoginReturn,
+  LogoutData,
+  LogoutReturn,
   MenusReturn,
   readAuthData,
   readAuthReturn,
@@ -21,10 +24,15 @@ import http from './index'
 export const loginUser = (data: LOginData) =>
   http.post<LoginReturn>('/users/login', data)
 
+export const logoutUser = (data: LogoutData) =>
+  http.post<LogoutReturn>('/users/logout', data)
+
 export const registerUser = (data: LOginData) =>
   http.post<RegisterReturn>('/users/register', data)
 
 export const getUserMenu = () => http.post<MenusReturn>('/users/getUserMenus')
+export const getUserInfo = () =>
+  http.post<getUserInfoReturn>('/users/getUserInfo')
 
 export const getUserToken = (refreshToken: string) =>
   http.post<RefreshTokenReturn>('/users/getToken', {

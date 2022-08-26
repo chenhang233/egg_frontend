@@ -6,6 +6,7 @@ import {
   registerUser,
   getRolesread,
   readAuth,
+  getUserInfo,
 } from '../api/user'
 import {
   Condition_1,
@@ -59,6 +60,11 @@ export const getRegisterUser = createAsyncThunk(
 )
 export const getUserMenus = createAsyncThunk('getUserMenus', async () => {
   const data = await getUserMenu()
+  return data
+})
+
+export const getUserinfo = createAsyncThunk('getUserinfo', async () => {
+  const data = await getUserInfo()
   return data
 })
 export const getRolesRead = createAsyncThunk('getRolesRead', async () => {
@@ -126,6 +132,10 @@ export const stateSlice = createSlice({
     builder.addCase(getUserMenus.fulfilled, (state, action) => {
       const menu = action.payload.data.data.menu
       state.info.menu = menu
+    })
+    builder.addCase(getUserinfo.fulfilled, (state, action) => {
+      const userinfo = action.payload.data.data
+      state.info.userinfo = userinfo
     })
     builder.addCase(getRolesRead.fulfilled, (state, action) => {
       const routeArr = action.payload.data.data

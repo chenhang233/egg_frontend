@@ -4,7 +4,6 @@ export interface BASE_RETURN<T> {
   data: T
 }
 export type UserInfo = {
-  id: 20
   password: string
   lastLoginTime: string | null
   otherRoleIds: string | null
@@ -16,6 +15,7 @@ export type UserInfo = {
   registerTime: string | string
   avatar: string
   username: string
+  uuid: string
 }
 export interface Route {
   routerName: string
@@ -44,6 +44,11 @@ export interface LoginReduxData {
   userinfo: UserInfo
 }
 
+export interface LogoutData {
+  uuid: string
+  logoutTime: number
+}
+
 export interface readAuthData {
   uuid: number
   condition: 'R' | 'I'
@@ -65,12 +70,6 @@ export interface Roles {
 
 export type AddRole = Omit<Roles, 'uuid'>
 
-export type LoginReturn = BASE_RETURN<{
-  refreshToken: string
-  token: string
-  // userinfo: UserInfo
-}>
-
 interface Condition_1 {
   uuid: number
   name: string
@@ -88,7 +87,18 @@ interface Visit_obj {
   logoutTime: string | null
   username: string
 }
+
+export type LoginReturn = BASE_RETURN<{
+  refreshToken: string
+  token: string
+  // userinfo: UserInfo
+}>
+
+export type LogoutReturn = BASE_RETURN<[]>
+
 export type RegisterReturn = BASE_RETURN<LOginData>
+
+export type getUserInfoReturn = BASE_RETURN<UserInfo>
 
 export type MenusReturn = BASE_RETURN<{ menu: Menu }>
 

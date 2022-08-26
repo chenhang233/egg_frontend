@@ -1,4 +1,4 @@
-import { useCallback, useRef } from 'react'
+import { useCallback, useEffect, useRef } from 'react'
 import { shallowEqual } from 'react-redux'
 import { Outlet, useLocation, useNavigate } from 'react-router-dom'
 import { useAppDispatch, useAppSelector } from '../../redux/hook'
@@ -9,9 +9,10 @@ import styles from './Index.module.scss'
 import classNames from 'classnames'
 import { TransformRoute, transformRouter } from '../../utils/index'
 import { ItemType } from 'antd/lib/menu/hooks/useItems'
-import { getUserMenus, logout } from '../../redux/slice'
+import { getUserinfo, getUserMenus, logout } from '../../redux/slice'
 import Modal from '../../components/Modal'
 import { transformIconStringToJSX } from '../../utils/enum'
+import { logoutUser } from '../../api/user'
 
 type MenuItem = Required<MenuProps>['items'][number]
 type Menus_AS = {
@@ -34,10 +35,16 @@ const Index = () => {
     (state) => state.user.info.menu.router,
     shallowEqual
   )
-  // console.log(routers, 'routers')
-  if (!routers?.length) {
-    dispatch(getUserMenus())
-  }
+  const { uuid, avatar } = useAppSelector(
+    (state) => state.user.info.userinfo,
+    shallowEqual
+  )
+  useEffect(() => {
+    dispatch(getUserinfo())
+    if (!routers?.length) {
+      dispatch(getUserMenus())
+    }
+  }, [dispatch, routers?.length])
   routerArrRef.current = transformRouter(routers, null)
 
   function getItem(
@@ -95,10 +102,18 @@ const Index = () => {
       }
     }
   }
-  const loginOutOk = () => {
-    setVisible(false)
-    dispatch(logout(null))
-    navigate('/login', { state: { from: location } })
+  const loginOutOk = async () => {
+    try {
+      if (!uuid) {
+        await dispatch(getUserinfo())
+      }
+      await logoutUser({ uuid: uuid, logoutTime: Date.now() })
+      setVisible(false)
+      dispatch(logout(null))
+      navigate('/login', { state: { from: location } })
+    } catch {
+      navigate('/login', { state: { from: location } })
+    }
   }
   const computedDefaultSelectKeys = () => {
     if (routers && location.pathname && items) {
@@ -171,7 +186,9 @@ const Index = () => {
           collapsed={collapsed}
           onCollapse={(value) => setCollapsed(value)}
         >
-          <div className="logo" />
+          <div className="logo">
+            <img src={avatar} alt="图片错误" />
+          </div>
           <Menu
             style={{ minWidth: 0, flex: 'auto' }}
             theme="dark"

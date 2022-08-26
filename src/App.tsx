@@ -14,6 +14,9 @@ import Fallback from './pages/Fallback'
 
 const Login = React.lazy(() => import('./pages/Login'))
 const RoleManage = React.lazy(() => import('./pages/Index/pages/RoleManage'))
+const OutletNotFound = React.lazy(
+  () => import('./pages/Index/pages/OutletNotFound')
+)
 const PermissionManage = React.lazy(
   () => import('./pages/Index/pages/permissionManage')
 )
@@ -21,6 +24,7 @@ const Test = React.lazy(() => import('./pages/Test'))
 const Calendar = React.lazy(() => import('./pages/Index/pages/Calendar'))
 const Analyse = React.lazy(() => import('./pages/Index/pages/Analyse'))
 const Forum = React.lazy(() => import('./pages/Index/pages/Forum'))
+const Userinfo = React.lazy(() => import('./pages/Index/pages/Userinfo'))
 
 function App() {
   const dispatch = useAppDispatch()
@@ -53,9 +57,11 @@ function App() {
         return <Analyse></Analyse>
       case 'recreation/forum':
         return <Forum></Forum>
+      case 'person/userinfo':
+        return <Userinfo></Userinfo>
 
       default:
-        return <NotFound />
+        return <OutletNotFound />
     }
   }
   const NoAuthRouter = () => {

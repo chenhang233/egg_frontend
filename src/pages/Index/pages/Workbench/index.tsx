@@ -16,6 +16,9 @@ const Workbench = () => {
         },
       }) => {
         if (code === 0) {
+          details.sort(
+            (a, b) => Date.parse(b.loginTime) - Date.parse(a.loginTime)
+          )
           setDetails(details)
           setCount(count)
         }

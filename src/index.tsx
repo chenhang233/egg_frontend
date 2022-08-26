@@ -1,5 +1,4 @@
 import React from 'react'
-import zhCN from 'antd/es/locale/zh_CN'
 import ReactDOM from 'react-dom/client'
 import './index.css'
 import App from './App'
@@ -7,7 +6,9 @@ import { store } from './redux/store'
 import { Provider } from 'react-redux'
 import { unstable_HistoryRouter as HistoryRouter } from 'react-router-dom'
 import { createBrowserHistory } from 'history'
+import zhCN from 'antd/es/locale/zh_CN'
 import { ConfigProvider } from 'antd'
+import 'moment/locale/zh-cn'
 
 export const history = createBrowserHistory({ window })
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement)
