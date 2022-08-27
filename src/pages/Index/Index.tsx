@@ -9,7 +9,7 @@ import styles from './Index.module.scss'
 import classNames from 'classnames'
 import { TransformRoute, transformRouter } from '../../utils/index'
 import { ItemType } from 'antd/lib/menu/hooks/useItems'
-import { getUserinfo, getUserMenus, logout } from '../../redux/slice'
+import { getUserinfo, logout } from '../../redux/slice'
 import Modal from '../../components/Modal'
 import { transformIconStringToJSX } from '../../utils/enum'
 import { logoutUser } from '../../api/user'
@@ -40,11 +40,13 @@ const Index = () => {
     shallowEqual
   )
   useEffect(() => {
-    dispatch(getUserinfo())
-    if (!routers?.length) {
-      dispatch(getUserMenus())
+    if (!uuid) {
+      dispatch(getUserinfo())
     }
-  }, [dispatch, routers?.length])
+    // if (!routers?.length) {
+    //   dispatch(getUserMenus())
+    // }
+  }, [dispatch, uuid])
   routerArrRef.current = transformRouter(routers, null)
 
   function getItem(

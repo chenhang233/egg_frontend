@@ -7,7 +7,8 @@ import {
   localStorage_get,
 } from '../utils'
 import { history } from '../index'
-import { getUserToken } from './user'
+import { getUserToken, logoutUser } from './user'
+
 export const success = (msg?: string) => {
   message.success(msg || '成功', 3)
 }
@@ -78,20 +79,25 @@ instance.interceptors.response.use(
       const config = e.config
       if (refToken && errorArr.length < 2) {
         const {
-          data: { data, code, message },
+          data: { data, code },
         } = await getUserToken(`Bearer ${refToken}`)
         if (code === 0) {
           localStorage_add('token', data.token)
           return instance(config)
         }
-        history.replace('/login')
-        return error(message)
-      } else {
-        localStorage_clear()
-        errorArr = []
-        history.replace('/login')
-        return error(e.response.data.message)
+        if (code === 1) {
+          return error(e.response.data.message)
+        }
       }
+    } else if (e.response && e.response.status === 403) {
+      const { code, uuid } = e.response.data.data
+      localStorage_clear()
+      errorArr = []
+      history.replace('/login')
+      if (code === 403) {
+        await logoutUser({ uuid: uuid, logoutTime: Date.now() })
+      }
+      return 403
     } else {
       error('未知响应错误')
       throw new Error('服务器error')
