@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <script>
+      let arr = [
+        new Promise((r) => r({ key: 1, value: 2 })),
+        new Promise((r) => r({ key: 1, value: 2 })),
+      ]
+      console.log('1111')
+      const p = new Promise((resolve) =>
+        setTimeout(() => {
+          resolve(1)
+        }, 100)
+      )
+      console.log(arr, 'arr')
+      for (key of arr) {
+        console.log(key)
+        //   //    console.log(p);
+      }
+    </script>
+  </body>
+</html>

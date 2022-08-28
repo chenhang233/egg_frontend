@@ -130,8 +130,10 @@ export const stateSlice = createSlice({
       console.log(action.payload.data.data) // 触发error
     })
     builder.addCase(getUserMenus.fulfilled, (state, action) => {
-      const menu = action.payload.data.data.menu
-      state.info.menu = menu
+      if (action.payload.data) {
+        const menu = action.payload.data.data.menu
+        state.info.menu = menu
+      }
     })
     builder.addCase(getUserinfo.fulfilled, (state, action) => {
       const userinfo = action.payload.data.data

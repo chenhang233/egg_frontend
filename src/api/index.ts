@@ -94,10 +94,13 @@ instance.interceptors.response.use(
       localStorage_clear()
       errorArr = []
       history.replace('/login')
-      if (code === 403) {
+      if (code === 403 && uuid) {
         await logoutUser({ uuid: uuid, logoutTime: Date.now() })
       }
-      return 403
+      if (!uuid) {
+        error('可能其他人退出了当前账号')
+      }
+      return e
     } else {
       error('未知响应错误')
       throw new Error('服务器error')
