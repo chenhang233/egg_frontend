@@ -44,7 +44,7 @@ const Index = () => {
       dispatch(getUserinfo())
     }
     socket.emit('exchange', {
-      target: 'Dkn3UXSu8_jHvKBmAAHW',
+      target: 'target2',
       payload: {
         msg: 'test',
       },
