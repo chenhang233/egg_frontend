@@ -13,7 +13,7 @@ import { getUserinfo, logout } from '../../redux/slice'
 import Modal from '../../components/Modal'
 import { transformIconStringToJSX } from '../../utils/enum'
 import { logoutUser } from '../../api/user'
-
+import socket from '../../utils/websocket'
 type MenuItem = Required<MenuProps>['items'][number]
 type Menus_AS = {
   label: React.ReactNode
@@ -43,6 +43,12 @@ const Index = () => {
     if (!uuid) {
       dispatch(getUserinfo())
     }
+    socket.emit('exchange', {
+      target: 'Dkn3UXSu8_jHvKBmAAHW',
+      payload: {
+        msg: 'test',
+      },
+    })
     // if (!routers?.length) {
     //   dispatch(getUserMenus())
     // }

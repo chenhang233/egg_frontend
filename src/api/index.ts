@@ -98,7 +98,7 @@ instance.interceptors.response.use(
         await logoutUser({ uuid: uuid, logoutTime: Date.now() })
       }
       if (!uuid) {
-        error('可能其他人退出了当前账号')
+        error('当前账号已经是退出状态')
       }
       return e
     } else {
