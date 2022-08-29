@@ -2,44 +2,45 @@ import { io } from 'socket.io-client'
 // browser
 const log = console.log
 
-// init
-const socket = io('http://localhost:7001', {
-  // 实际使用中可以在这里传递参数
-  query: {
-    room: 'tempP2P',
-    userId: `client_${Math.random()}`,
-  },
+export function SocketFn(url: string, room: 'loginHall' | 'tempP2P') {
+  // init
+  const socket = io(url, {
+    // 实际使用中可以在这里传递参数
+    query: {
+      room,
+      userId: `client_${Math.random()}`,
+    },
 
-  transports: ['websocket'],
-})
-
-socket.on('connect', () => {
-  const id = socket.id
-
-  log('#connect,', id, socket)
-
-  // 监听自身 id 以实现 p2p 通讯
-  socket.on(id, (msg) => {
-    log('#receive,', msg)
+    transports: ['websocket'],
   })
-})
 
-// 接收在线用户信息
-socket.on('online', (msg) => {
-  log('#online,', msg)
-})
+  socket.on('connect', () => {
+    const id = socket.id
 
-// 系统事件
-socket.on('disconnect', (msg) => {
-  log('#disconnect', msg)
-})
+    log('#connect,', id, socket)
 
-socket.on('disconnecting', () => {
-  log('#disconnecting')
-})
+    // 监听自身 id 以实现 p2p 通讯
+    socket.on(id, (msg) => {
+      log('#receive,', msg)
+    })
+  })
 
-socket.on('error', () => {
-  log('#error')
-})
+  // 接收在线用户信息
+  socket.on('online', (msg) => {
+    log('#online,', msg)
+  })
 
-export default socket
+  // 系统事件
+  socket.on('disconnect', (msg) => {
+    log('#disconnect', msg)
+  })
+
+  socket.on('disconnecting', () => {
+    log('#disconnecting')
+  })
+
+  socket.on('error', () => {
+    log('#error')
+  })
+  return socket
+}

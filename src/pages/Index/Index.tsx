@@ -13,7 +13,7 @@ import { getUserinfo, logout } from '../../redux/slice'
 import Modal from '../../components/Modal'
 import { transformIconStringToJSX } from '../../utils/enum'
 import { logoutUser } from '../../api/user'
-import socket from '../../utils/websocket'
+import { SocketFn } from '../../utils/websocket'
 type MenuItem = Required<MenuProps>['items'][number]
 type Menus_AS = {
   label: React.ReactNode
@@ -29,6 +29,7 @@ const Index = () => {
   const navigate = useNavigate()
   const location = useLocation()
   const dispatch = useAppDispatch()
+  const flag = useRef<boolean>(false)
   const [collapsed, setCollapsed] = useState(false)
   const [visible, setVisible] = useState(false)
   const routers = useAppSelector(
@@ -39,20 +40,27 @@ const Index = () => {
     (state) => state.user.info.userinfo,
     shallowEqual
   )
+  const socket = SocketFn('http://localhost:7001/login', 'loginHall')
   useEffect(() => {
     if (!uuid) {
       dispatch(getUserinfo())
     }
-    socket.emit('exchange', {
-      target: 'target2',
-      payload: {
-        msg: 'test',
-      },
-    })
+    if (uuid) {
+      console.log(uuid, 'uuid', flag.current, 'flag')
+      if (!flag.current) {
+        socket.emit('login', {
+          payload: {
+            uuid: uuid,
+          },
+        })
+      }
+      flag.current = true
+    }
+
     // if (!routers?.length) {
     //   dispatch(getUserMenus())
     // }
-  }, [dispatch, uuid])
+  }, [dispatch, uuid, socket])
   routerArrRef.current = transformRouter(routers, null)
 
   function getItem(
