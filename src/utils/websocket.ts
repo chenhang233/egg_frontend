@@ -2,12 +2,13 @@ import { io } from 'socket.io-client'
 // browser
 const log = console.log
 
-export function SocketFn(url: string, room: 'loginHall' | 'tempP2P') {
+export function SocketFn(url: string, room: 'login' | 'tempP2P', uuid: string) {
   // init
   const socket = io(url, {
     // 实际使用中可以在这里传递参数
     query: {
       room,
+      uuid: uuid,
       userId: `client_${Math.random()}`,
     },
 
@@ -41,6 +42,9 @@ export function SocketFn(url: string, room: 'loginHall' | 'tempP2P') {
 
   socket.on('error', () => {
     log('#error')
+  })
+  socket.on('message', (massage) => {
+    log('#message', massage)
   })
   return socket
 }

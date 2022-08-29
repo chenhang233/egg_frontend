@@ -14,6 +14,7 @@ import Modal from '../../components/Modal'
 import { transformIconStringToJSX } from '../../utils/enum'
 import { logoutUser } from '../../api/user'
 import { SocketFn } from '../../utils/websocket'
+import { Socket } from 'socket.io-client'
 type MenuItem = Required<MenuProps>['items'][number]
 type Menus_AS = {
   label: React.ReactNode
@@ -25,11 +26,12 @@ type Menus_AS = {
 
 const Index = () => {
   const routerArrRef = useRef<TransformRoute[] | undefined>(undefined)
+  const flag = useRef<boolean>(false)
+  const socketRef = useRef<Socket>()
   const { Header, Content, Footer, Sider } = Layout
   const navigate = useNavigate()
   const location = useLocation()
   const dispatch = useAppDispatch()
-  const flag = useRef<boolean>(false)
   const [collapsed, setCollapsed] = useState(false)
   const [visible, setVisible] = useState(false)
   const routers = useAppSelector(
@@ -40,7 +42,6 @@ const Index = () => {
     (state) => state.user.info.userinfo,
     shallowEqual
   )
-  const socket = SocketFn('http://localhost:7001/login', 'loginHall')
   useEffect(() => {
     if (!uuid) {
       dispatch(getUserinfo())
@@ -48,11 +49,16 @@ const Index = () => {
     if (uuid) {
       console.log(uuid, 'uuid', flag.current, 'flag')
       if (!flag.current) {
-        socket.emit('login', {
-          payload: {
-            uuid: uuid,
-          },
-        })
+        socketRef.current = SocketFn(
+          'http://localhost:7001/login',
+          'login',
+          uuid
+        )
+        // socketRef.current.emit('ping', {
+        //   payload: {
+        //     uuid: uuid,
+        //   },
+        // })
       }
       flag.current = true
     }
@@ -60,7 +66,7 @@ const Index = () => {
     // if (!routers?.length) {
     //   dispatch(getUserMenus())
     // }
-  }, [dispatch, uuid, socket])
+  }, [dispatch, uuid])
   routerArrRef.current = transformRouter(routers, null)
 
   function getItem(
