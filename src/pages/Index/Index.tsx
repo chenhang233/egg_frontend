@@ -43,11 +43,12 @@ const Index = () => {
     shallowEqual
   )
   useEffect(() => {
+    console.log(uuid, 'uuid', flag.current)
+
     if (!uuid) {
       dispatch(getUserinfo())
     }
     if (uuid) {
-      console.log(uuid, 'uuid', flag.current, 'flag')
       if (!flag.current) {
         socketRef.current = SocketFn(
           'http://localhost:7001/login',
@@ -221,6 +222,7 @@ const Index = () => {
             }
             mode="inline"
             items={items}
+            forceSubMenuRender
           />
         </Sider>
         <Layout className="site-layout">
@@ -232,8 +234,8 @@ const Index = () => {
           </Header>
           <Content style={{ margin: '0 16px' }}>
             <Breadcrumb style={{ margin: '16px 0' }}>
-              {defaultBreadcrumb.map((str) => (
-                <Breadcrumb.Item key={str}>{str}</Breadcrumb.Item>
+              {defaultBreadcrumb.map((str, i) => (
+                <Breadcrumb.Item key={i}>{str}</Breadcrumb.Item>
               ))}
             </Breadcrumb>
             <div
