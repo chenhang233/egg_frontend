@@ -1,13 +1,14 @@
 import { configureStore } from '@reduxjs/toolkit'
 // import thunkMiddleware from 'redux-thunk'
 import stateSlice from './slice'
+import socketClice from './socket'
 // import otherSlice from "./otherSlice";
 
 export const store = configureStore({
   // 每个reducer代表一个模块的状态管理器
   reducer: {
     user: stateSlice,
-    // other: otherSlice,
+    socket: socketClice,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({ serializableCheck: false }),

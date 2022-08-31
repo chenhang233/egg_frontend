@@ -1,10 +1,14 @@
 import { useCallback, useEffect, useRef } from 'react'
 import { shallowEqual } from 'react-redux'
-import { DownOutlined, SmileOutlined } from '@ant-design/icons'
+import {
+  DownOutlined,
+  CheckCircleOutlined,
+  UpOutlined,
+} from '@ant-design/icons'
 import io from 'socket.io-client'
 import { Outlet, useLocation, useNavigate } from 'react-router-dom'
 import { useAppDispatch, useAppSelector } from '../../redux/hook'
-import { Button, Dropdown, MenuProps, Space } from 'antd'
+import { Button, Dropdown, MenuProps, Space, Tag } from 'antd'
 import { Breadcrumb, Layout, Menu } from 'antd'
 import React, { useState } from 'react'
 import styles from './Index.module.scss'
@@ -15,6 +19,8 @@ import { getUserinfo, logout } from '../../redux/slice'
 import Modal from '../../components/Modal'
 import { transformIconStringToJSX } from '../../utils/enum'
 import { logoutUser } from '../../api/user'
+import { Login_socket_return } from './pages/socketType'
+import { addUserSocket } from '../../redux/socket'
 type MenuItem = Required<MenuProps>['items'][number]
 type Menus_AS = {
   label: React.ReactNode
@@ -33,6 +39,9 @@ const Index = () => {
   const dispatch = useAppDispatch()
   const [collapsed, setCollapsed] = useState(false)
   const [visible, setVisible] = useState(false)
+  const [socketInfo, setSocketInfo] = useState('暂无消息..')
+  const [SocketListVisible, setSocketListVisible] = useState(false)
+
   const routers = useAppSelector(
     (state) => state.user.info.menu.router,
     shallowEqual
@@ -41,56 +50,7 @@ const Index = () => {
     (state) => state.user.info.userinfo,
     shallowEqual
   )
-  const menu = (
-    <Menu
-      items={[
-        {
-          key: '1',
-          label: (
-            <a
-              target="_blank"
-              rel="noopener noreferrer"
-              href="https://www.antgroup.com"
-            >
-              1st menu item
-            </a>
-          ),
-        },
-        {
-          key: '2',
-          label: (
-            <a
-              target="_blank"
-              rel="noopener noreferrer"
-              href="https://www.aliyun.com"
-            >
-              2nd menu item (disabled)
-            </a>
-          ),
-          icon: <SmileOutlined />,
-          disabled: true,
-        },
-        {
-          key: '3',
-          label: (
-            <a
-              target="_blank"
-              rel="noopener noreferrer"
-              href="https://www.luohanacademy.com"
-            >
-              3rd menu item (disabled)
-            </a>
-          ),
-          disabled: true,
-        },
-        {
-          key: '4',
-          danger: true,
-          label: 'a danger item',
-        },
-      ]}
-    />
-  )
+  const { userSokectList } = useAppSelector((state) => state.socket)
   useEffect(() => {
     if (!uuid) {
       dispatch(getUserinfo())
@@ -105,17 +65,39 @@ const Index = () => {
       })
       clientRef.current = client
       client.on('connect', () => {
-        console.log('连接建立', client.id)
+        const value = 'socket连接已连接建立'
+        setSocketInfo('最新消息:' + value)
+        dispatch(addUserSocket({ value }))
       })
-      client.on('message', (data: any) => {
-        console.log('>>>>收到 socket.io 消息:', data)
+      client.on('message', (data: Login_socket_return) => {
+        const { msg } = data.data.payload
+        setSocketInfo('最新消息:' + msg)
+        dispatch(addUserSocket({ value: msg }))
       })
       return () => {
         client.close()
       }
     }
   }, [dispatch, uuid])
-
+  const menu = (
+    <Menu
+      items={userSokectList.map((v, i) => {
+        return {
+          key: i,
+          label: (
+            <div className="socketListDiv">
+              <span className="text" title={v.value}>
+                {v.value}{' '}
+              </span>
+              <Tag icon={<CheckCircleOutlined />} color="success">
+                success
+              </Tag>{' '}
+            </div>
+          ),
+        }
+      })}
+    />
+  )
   function getItem(
     label: React.ReactNode,
     key: React.Key,
@@ -275,10 +257,13 @@ const Index = () => {
           <Header className="site-layout-header" style={{ padding: 0 }}>
             <section>
               <div className="first">
-                <Dropdown overlay={menu}>
+                <Dropdown
+                  overlay={menu}
+                  onVisibleChange={(visible) => setSocketListVisible(visible)}
+                >
                   <Space>
-                    Hover me
-                    <DownOutlined />
+                    {socketInfo}
+                    {SocketListVisible ? <UpOutlined /> : <DownOutlined />}
                   </Space>
                 </Dropdown>
               </div>
