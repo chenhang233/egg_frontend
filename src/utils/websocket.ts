@@ -1,6 +1,5 @@
 import { io } from 'socket.io-client'
 // browser
-const log = console.log
 
 export function SocketFn(url: string, room: 'login' | 'tempP2P', uuid: string) {
   // init
@@ -9,42 +8,32 @@ export function SocketFn(url: string, room: 'login' | 'tempP2P', uuid: string) {
     query: {
       room,
       uuid: uuid,
-      userId: `client_${Math.random()}`,
+      // userId: `client_${Math.random()}`,
     },
 
     transports: ['websocket'],
   })
 
-  socket.on('connect', () => {
-    const id = socket.id
+  // socket.on('online', (msg) => {
+  //   log('#online,', msg)
+  // })
+  // socket.on('message', (msg) => {
+  //   log('message', msg)
+  // })
+  // // 系统事件
+  // socket.on('disconnect', (msg) => {
+  //   log('#disconnect', msg)
+  // })
 
-    log('#connect,', id, socket)
+  // socket.on('disconnecting', () => {
+  //   log('#disconnecting')
+  // })
 
-    // 监听自身 id 以实现 p2p 通讯
-    socket.on(id, (msg) => {
-      log('#receive,', msg)
-    })
-  })
-
-  // 接收在线用户信息
-  socket.on('online', (msg) => {
-    log('#online,', msg)
-  })
-
-  // 系统事件
-  socket.on('disconnect', (msg) => {
-    log('#disconnect', msg)
-  })
-
-  socket.on('disconnecting', () => {
-    log('#disconnecting')
-  })
-
-  socket.on('error', () => {
-    log('#error')
-  })
-  socket.on('message', (massage) => {
-    log('#message', massage)
-  })
+  // socket.on('error', () => {
+  //   log('#error')
+  // })
+  // socket.on('test', (msg) => {
+  //   log('#te', msg)
+  // })
   return socket
 }

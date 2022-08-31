@@ -1,0 +1,22 @@
+.root {
+  width: 300px;
+  height: 80px;
+  text-align: center;
+  line-height: 80px;
+  :global {
+    .text {
+      width: 100%;
+      height: 100%;
+      &:hover {
+        text-decoration: underline;
+        cursor: default;
+      }
+    }
+    .more {
+      li {
+        position: relative;
+        z-index: 99;
+      }
+    }
+  }
+}

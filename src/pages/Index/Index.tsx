@@ -1,8 +1,10 @@
 import { useCallback, useEffect, useRef } from 'react'
 import { shallowEqual } from 'react-redux'
+import { DownOutlined, SmileOutlined } from '@ant-design/icons'
+import { io, Socket } from 'socket.io-client'
 import { Outlet, useLocation, useNavigate } from 'react-router-dom'
 import { useAppDispatch, useAppSelector } from '../../redux/hook'
-import { Button, MenuProps } from 'antd'
+import { Button, Dropdown, MenuProps, Space } from 'antd'
 import { Breadcrumb, Layout, Menu } from 'antd'
 import React, { useState } from 'react'
 import styles from './Index.module.scss'
@@ -13,8 +15,6 @@ import { getUserinfo, logout } from '../../redux/slice'
 import Modal from '../../components/Modal'
 import { transformIconStringToJSX } from '../../utils/enum'
 import { logoutUser } from '../../api/user'
-import { SocketFn } from '../../utils/websocket'
-import { Socket } from 'socket.io-client'
 type MenuItem = Required<MenuProps>['items'][number]
 type Menus_AS = {
   label: React.ReactNode
@@ -26,8 +26,7 @@ type Menus_AS = {
 
 const Index = () => {
   const routerArrRef = useRef<TransformRoute[] | undefined>(undefined)
-  const flag = useRef<boolean>(false)
-  const socketRef = useRef<Socket>()
+  const clientRef = useRef<Socket | null>(null)
   const { Header, Content, Footer, Sider } = Layout
   const navigate = useNavigate()
   const location = useLocation()
@@ -42,33 +41,74 @@ const Index = () => {
     (state) => state.user.info.userinfo,
     shallowEqual
   )
+  const menu = (
+    <Menu
+      items={[
+        {
+          key: '1',
+          label: (
+            <a
+              target="_blank"
+              rel="noopener noreferrer"
+              href="https://www.antgroup.com"
+            >
+              1st menu item
+            </a>
+          ),
+        },
+        {
+          key: '2',
+          label: (
+            <a
+              target="_blank"
+              rel="noopener noreferrer"
+              href="https://www.aliyun.com"
+            >
+              2nd menu item (disabled)
+            </a>
+          ),
+          icon: <SmileOutlined />,
+          disabled: true,
+        },
+        {
+          key: '3',
+          label: (
+            <a
+              target="_blank"
+              rel="noopener noreferrer"
+              href="https://www.luohanacademy.com"
+            >
+              3rd menu item (disabled)
+            </a>
+          ),
+          disabled: true,
+        },
+        {
+          key: '4',
+          danger: true,
+          label: 'a danger item',
+        },
+      ]}
+    />
+  )
   useEffect(() => {
-    console.log(uuid, 'uuid', flag.current)
-
     if (!uuid) {
       dispatch(getUserinfo())
     }
-    if (uuid) {
-      if (!flag.current) {
-        socketRef.current = SocketFn(
-          'http://localhost:7001/login',
-          'login',
-          uuid
-        )
-        // socketRef.current.emit('ping', {
-        //   payload: {
-        //     uuid: uuid,
-        //   },
-        // })
-      }
-      flag.current = true
+    if (uuid && !clientRef.current) {
+      const client = io('http://localhost:7001/login', {
+        transports: ['websocket'],
+        query: {
+          room: 'login',
+          uuid,
+        },
+      })
+      client.on('message', (data) => {
+        console.log('>>>>收到 socket.io 消息:', data)
+      })
+      clientRef.current = client
     }
-
-    // if (!routers?.length) {
-    //   dispatch(getUserMenus())
-    // }
   }, [dispatch, uuid])
-  routerArrRef.current = transformRouter(routers, null)
 
   function getItem(
     label: React.ReactNode,
@@ -113,7 +153,7 @@ const Index = () => {
     },
     []
   )
-
+  routerArrRef.current = transformRouter(routers, null)
   const items: MenuItem[] | undefined = getMenuItem(routerArrRef.current)
   const MenuChange = (key: string, keyPath: string[]) => {
     if (routers) {
@@ -227,7 +267,16 @@ const Index = () => {
         </Sider>
         <Layout className="site-layout">
           <Header className="site-layout-header" style={{ padding: 0 }}>
-            <section></section>
+            <section>
+              <div className="first">
+                <Dropdown overlay={menu}>
+                  <Space>
+                    Hover me
+                    <DownOutlined />
+                  </Space>
+                </Dropdown>
+              </div>
+            </section>
             <Button type="primary" onClick={() => setVisible(true)}>
               退出
             </Button>

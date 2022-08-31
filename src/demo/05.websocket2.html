@@ -62,10 +62,10 @@
       // 不重要的代码，仅展示使用 - end
       window.onload = function () {
         // init
-        const socket = io('http://localhost:7001/forum', {
+        const socket = io('http://localhost:7001/login', {
           // 实际使用中可以在这里传递参数
           query: {
-            room: 'tempP2P',
+            room: 'login',
             userId: `client_${Math.random()}`,
           },
           transports: ['websocket'],
