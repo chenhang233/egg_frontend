@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef } from 'react'
 import { shallowEqual } from 'react-redux'
 import { DownOutlined, SmileOutlined } from '@ant-design/icons'
-import { io, Socket } from 'socket.io-client'
+import io from 'socket.io-client'
 import { Outlet, useLocation, useNavigate } from 'react-router-dom'
 import { useAppDispatch, useAppSelector } from '../../redux/hook'
 import { Button, Dropdown, MenuProps, Space } from 'antd'
@@ -26,7 +26,7 @@ type Menus_AS = {
 
 const Index = () => {
   const routerArrRef = useRef<TransformRoute[] | undefined>(undefined)
-  const clientRef = useRef<Socket | null>(null)
+  const clientRef = useRef<any>(null)
   const { Header, Content, Footer, Sider } = Layout
   const navigate = useNavigate()
   const location = useLocation()
@@ -103,10 +103,16 @@ const Index = () => {
           uuid,
         },
       })
-      client.on('message', (data) => {
+      clientRef.current = client
+      client.on('connect', () => {
+        console.log('连接建立', client.id)
+      })
+      client.on('message', (data: any) => {
         console.log('>>>>收到 socket.io 消息:', data)
       })
-      clientRef.current = client
+      return () => {
+        client.close()
+      }
     }
   }, [dispatch, uuid])
 
