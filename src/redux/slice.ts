@@ -8,10 +8,12 @@ import {
   readAuth,
   getUserInfo,
   uploadAvatar,
+  setUserInfo,
 } from '../api/user'
 import {
   Condition_1,
   Condition_2,
+  FormUserInfo,
   LOginData,
   LoginReduxData,
   Roles,
@@ -68,6 +70,14 @@ export const getUserinfo = createAsyncThunk('getUserinfo', async () => {
   const data = await getUserInfo()
   return data
 })
+export const setUserinfo = createAsyncThunk(
+  'setUserinfo',
+  async (payload: FormUserInfo & { uuid: string }) => {
+    const data = await setUserInfo(payload)
+    return data
+  }
+)
+
 export const getRolesRead = createAsyncThunk('getRolesRead', async () => {
   const data = await getRolesread()
   return data

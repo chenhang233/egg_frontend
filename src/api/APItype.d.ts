@@ -3,17 +3,19 @@ export interface BASE_RETURN<T> {
   message: string
   data: T
 }
-export type UserInfo = {
-  password: string
-  lastLoginTime: string | null
-  otherRoleIds: string | null
-  name: string
+export type FormUserInfo = {
+  nickname: string
   sex: string
   phone: string | null
   address: string | null
   introduction: string | null
-  registerTime: string | string
   avatar: string
+}
+export type UserInfo = FormUserInfo & {
+  password: string
+  lastLoginTime: string | null
+  otherRoleIds: string | null
+  registerTime: string | string
   username: string
   uuid: string
 }
@@ -103,6 +105,10 @@ export type getUserInfoReturn = BASE_RETURN<UserInfo>
 export type MenusReturn = BASE_RETURN<{ menu: Menu }>
 
 export type RefreshTokenReturn = BASE_RETURN<{ token: string }>
+
+export type UploadAvatarReturn = BASE_RETURN<[]>
+
+export type SetUserInfoReturn = BASE_RETURN<[]>
 
 export type RolesReadReturn = BASE_RETURN<Roles[]>
 

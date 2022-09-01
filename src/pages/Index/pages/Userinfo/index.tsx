@@ -8,11 +8,19 @@ import {
   Upload,
   message,
   Tabs,
+  FormInstance,
 } from 'antd'
 import { LoadingOutlined, PlusOutlined } from '@ant-design/icons'
 import { useAppDispatch, useAppSelector } from '../../../../redux/hook'
 import { shallowEqual } from 'react-redux'
-import { setAvatar, setUploadAvatar } from '../../../../redux/slice'
+import {
+  getUserinfo,
+  setAvatar,
+  setUploadAvatar,
+  setUserinfo,
+} from '../../../../redux/slice'
+import { FormUserInfo } from '../../../../api/APItype'
+import { success } from '../../../../api'
 const { TextArea } = Input
 const { TabPane } = Tabs
 
@@ -21,12 +29,29 @@ const Userinfo = () => {
   const [imageUrl, setImageUrl] = useState<string>()
   const [loading, setLoading] = useState(false)
   const fileRef = useRef<HTMLInputElement>(null)
+  const formRef = useRef<FormInstance>(null)
   const dispatch = useAppDispatch()
-  const { username, password, sex, phone, introduction, avatar } =
-    useAppSelector((state) => state.user.info.userinfo, shallowEqual)
+  const {
+    username,
+    password,
+    sex,
+    phone,
+    introduction,
+    avatar,
+    nickname,
+    uuid,
+  } = useAppSelector((state) => state.user.info.userinfo, shallowEqual)
   useEffect(() => {
     setImageUrl(avatar)
-  }, [avatar])
+    formRef.current?.setFieldsValue({
+      username: username,
+      password: password,
+      sex: sex,
+      phone: phone,
+      introduction: introduction,
+      nickname: nickname,
+    })
+  }, [avatar, username, password, sex, phone, introduction, nickname])
   const getBase64 = (img: File, callback: (url: string) => void) => {
     const reader = new FileReader()
     reader.addEventListener('load', () => callback(reader.result as string))
@@ -59,6 +84,12 @@ const Userinfo = () => {
       setLoading(false)
     }
   }
+  const onFinish = async (value: FormUserInfo) => {
+    await dispatch(setUserinfo({ ...value, uuid: uuid }))
+    await dispatch(getUserinfo())
+    success('修改成功')
+    setComponentDisabled(true)
+  }
   return (
     <div>
       <Tabs defaultActiveKey="1">
@@ -70,6 +101,7 @@ const Userinfo = () => {
             表单编辑
           </Checkbox>
           <Form
+            ref={formRef}
             labelCol={{ span: 4 }}
             wrapperCol={{ span: 14 }}
             layout="horizontal"
@@ -81,7 +113,9 @@ const Userinfo = () => {
               sex: sex,
               phone: phone,
               introduction: introduction,
+              nickname: nickname,
             }}
+            onFinish={onFinish}
           >
             <Form.Item
               label="用户名"
@@ -118,11 +152,20 @@ const Userinfo = () => {
             >
               <Input type="text" placeholder="phone" />
             </Form.Item>
+            <Form.Item
+              label="昵称"
+              name="nickname"
+              rules={[{ max: 10, message: '昵称最大10个字符' }]}
+            >
+              <Input type="text" placeholder="昵称" />
+            </Form.Item>
             <Form.Item label="个人介绍" name="introduction">
               <TextArea rows={4} maxLength={300} />
             </Form.Item>
             <Form.Item label="修改">
-              <Button type="primary">提交</Button>
+              <Button type="primary" htmlType="submit">
+                提交
+              </Button>
             </Form.Item>
           </Form>
         </TabPane>

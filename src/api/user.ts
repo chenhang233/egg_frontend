@@ -1,6 +1,7 @@
 import {
   AddRole,
   AddRoleReturn,
+  FormUserInfo,
   getUserInfoReturn,
   LOginData,
   LoginReturn,
@@ -13,10 +14,12 @@ import {
   RegisterReturn,
   removeRoleReturn,
   RolesReadReturn,
+  SetUserInfoReturn,
   SingleInterface,
   SingleInterfaceReturn,
   SingleRouter,
   SingleRouterReturn,
+  UploadAvatarReturn,
   VisitNumberReturn,
 } from './APItype'
 import http from './index'
@@ -38,6 +41,12 @@ export const getUserToken = (refreshToken: string) =>
   http.post<RefreshTokenReturn>('/users/getToken', {
     refreshToken: refreshToken,
   })
+
+export const uploadAvatar = (file: FormData) =>
+  http.post<UploadAvatarReturn>('/users/uploadAvatar', file)
+
+export const setUserInfo = (data: FormUserInfo & { uuid: string }) =>
+  http.post<SetUserInfoReturn>('/users/setUserInfo', data)
 
 export const getRolesread = () => http.post<RolesReadReturn>('/roles/read')
 
@@ -64,6 +73,3 @@ export const addInterface = (obj: SingleInterface) =>
 
 export const visitNum = () =>
   http.get<VisitNumberReturn>('/dashboard/visitNumbers')
-
-export const uploadAvatar = (file: FormData) =>
-  http.post('/users/uploadAvatar', file)
