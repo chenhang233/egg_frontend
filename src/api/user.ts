@@ -64,3 +64,6 @@ export const addInterface = (obj: SingleInterface) =>
 
 export const visitNum = () =>
   http.get<VisitNumberReturn>('/dashboard/visitNumbers')
+
+export const uploadAvatar = (file: FormData) =>
+  http.post('/users/uploadAvatar', file)

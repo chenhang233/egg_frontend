@@ -1,14 +1,10 @@
 import { useCallback, useEffect, useRef } from 'react'
 import { shallowEqual } from 'react-redux'
-import {
-  DownOutlined,
-  CheckCircleOutlined,
-  UpOutlined,
-} from '@ant-design/icons'
+import { DownOutlined, UpOutlined } from '@ant-design/icons'
 import io from 'socket.io-client'
 import { Outlet, useLocation, useNavigate } from 'react-router-dom'
 import { useAppDispatch, useAppSelector } from '../../redux/hook'
-import { Button, Dropdown, MenuProps, Space, Tag } from 'antd'
+import { Button, Dropdown, MenuProps, Space } from 'antd'
 import { Breadcrumb, Layout, Menu } from 'antd'
 import React, { useState } from 'react'
 import styles from './Index.module.scss'
@@ -74,6 +70,9 @@ const Index = () => {
         setSocketInfo('最新消息:' + msg)
         dispatch(addUserSocket({ value: msg }))
       })
+      client.on('disconnect', (msg: any) => {
+        console.log(msg)
+      })
       return () => {
         client.close()
       }
@@ -89,9 +88,9 @@ const Index = () => {
               <span className="text" title={v.value}>
                 {v.value}{' '}
               </span>
-              <Tag icon={<CheckCircleOutlined />} color="success">
-                success
-              </Tag>{' '}
+              <div className="tag">
+                <span></span>
+              </div>
             </div>
           ),
         }

@@ -7,6 +7,7 @@ import {
   getRolesread,
   readAuth,
   getUserInfo,
+  uploadAvatar,
 } from '../api/user'
 import {
   Condition_1,
@@ -71,6 +72,13 @@ export const getRolesRead = createAsyncThunk('getRolesRead', async () => {
   const data = await getRolesread()
   return data
 })
+export const setUploadAvatar = createAsyncThunk(
+  'setUploadAvatar',
+  async (payload: FormData) => {
+    const data = await uploadAvatar(payload)
+    return data
+  }
+)
 
 export const getRoleConditionRead = createAsyncThunk(
   'getRoleConditionRead',
@@ -109,6 +117,9 @@ export const stateSlice = createSlice({
     loginChange: (state) => {
       state.isLogin = true
       localStorage_add('isLogin', 'true')
+    },
+    setAvatar: (state, action: PayloadAction<string>) => {
+      state.info.userinfo.avatar = action.payload
     },
   },
   extraReducers: (builder) => {
@@ -159,5 +170,6 @@ export const stateSlice = createSlice({
   },
 })
 
-export const { changeTheme, logout, loginChange } = stateSlice.actions
+export const { changeTheme, logout, loginChange, setAvatar } =
+  stateSlice.actions
 export default stateSlice.reducer

@@ -448,14 +448,24 @@ textarea {
 .socketListDiv {
   display: flex;
   align-items: center;
-  justify-content: flex-start;
+  justify-content: space-between;
 }
 .socketListDiv .text {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  flex: 2;
+  flex: 9;
 }
-.socketListDiv .ant-tag {
+.socketListDiv .tag {
   flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 18px;
+}
+.socketListDiv .tag span {
+  width: 5px;
+  height: 5px;
+  background-color: red;
+  border-radius: 50%;
 }
