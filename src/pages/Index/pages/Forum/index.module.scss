@@ -1,0 +1,51 @@
+.root {
+  height: 100%;
+  min-height: inherit;
+  display: flex;
+  :global {
+    .online {
+      flex: 1;
+    }
+    .panel {
+      flex: 3;
+      .content {
+        overflow: auto;
+        .comment-list {
+          .ant-comment-content-detail {
+            border-radius: 2px;
+          }
+          .me {
+            .ant-comment-content-detail {
+              background-color: rgba(18, 183, 245);
+              color: rgba(255, 255, 225);
+            }
+          }
+          .other {
+            .ant-comment-content-detail {
+              color: rgba(0, 0, 0);
+              background-color: rgba(229, 229, 229);
+            }
+          }
+        }
+      }
+      .emit {
+        position: relative;
+        .utils {
+          height: 10%;
+          border: 1px solid #ccc;
+        }
+        .ant-input-borderless {
+          resize: none;
+        }
+        .buttonEmit {
+          position: absolute;
+          left: 88%;
+          top: 56%;
+        }
+      }
+    }
+    .right {
+      flex: 1;
+    }
+  }
+}

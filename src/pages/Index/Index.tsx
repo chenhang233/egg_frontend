@@ -35,6 +35,7 @@ const Index = () => {
   const dispatch = useAppDispatch()
   const [collapsed, setCollapsed] = useState(false)
   const [visible, setVisible] = useState(false)
+  const [clientHeight, setClientHeight] = useState(600)
   const [socketInfo, setSocketInfo] = useState('暂无消息..')
   const [SocketListVisible, setSocketListVisible] = useState(false)
 
@@ -48,6 +49,7 @@ const Index = () => {
   )
   const { userSokectList } = useAppSelector((state) => state.socket)
   useEffect(() => {
+    setClientHeight(document.body.clientHeight - 200)
     if (!uuid) {
       dispatch(getUserinfo())
     }
@@ -249,7 +251,7 @@ const Index = () => {
             }
             mode="inline"
             items={items}
-            forceSubMenuRender
+            forceSubMenuRender={true}
           />
         </Sider>
         <Layout className="site-layout">
@@ -279,7 +281,7 @@ const Index = () => {
             </Breadcrumb>
             <div
               className="site-layout-background"
-              style={{ padding: 24, minHeight: 500 }}
+              style={{ padding: 24, maxHeight: clientHeight + 30 }}
             >
               <Outlet></Outlet>
             </div>

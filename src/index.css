@@ -469,3 +469,24 @@ textarea {
   background-color: red;
   border-radius: 50%;
 }
+
+div::-webkit-scrollbar,
+textarea::-webkit-scrollbar {
+  width: 10px;
+}
+div::-webkit-scrollbar-thumb,
+textarea::-webkit-scrollbar-thumb {
+  border-radius: 10px;
+  -webkit-box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
+  background: rgba(0, 0, 0, 0.2);
+}
+div::-webkit-scrollbar-track,
+textarea::-webkit-scrollbar-track {
+  -webkit-box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
+  border-radius: 0;
+  background: rgba(0, 0, 0, 0.1);
+}
+
+textarea {
+  resize: none;
+}

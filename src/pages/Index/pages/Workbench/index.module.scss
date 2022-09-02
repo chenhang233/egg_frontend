@@ -6,19 +6,5 @@
       max-height: 500px;
     }
     /*滚动条样式*/
-    .ant-list-bordered::-webkit-scrollbar {
-      width: 10px;
-      /*height: 4px;*/
-    }
-    .ant-list-bordered::-webkit-scrollbar-thumb {
-      border-radius: 10px;
-      -webkit-box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
-      background: rgba(0, 0, 0, 0.2);
-    }
-    .ant-list-bordered::-webkit-scrollbar-track {
-      -webkit-box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
-      border-radius: 0;
-      background: rgba(0, 0, 0, 0.1);
-    }
   }
 }
