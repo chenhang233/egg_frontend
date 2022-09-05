@@ -25,7 +25,9 @@ const Calendar = React.lazy(() => import('./pages/Index/pages/Calendar'))
 const Analyse = React.lazy(() => import('./pages/Index/pages/Analyse'))
 const Forum = React.lazy(() => import('./pages/Index/pages/Forum'))
 const Userinfo = React.lazy(() => import('./pages/Index/pages/Userinfo'))
-
+const DynamicApache = React.lazy(
+  () => import('./pages/Index/pages/DynamicApache')
+)
 function App() {
   const dispatch = useAppDispatch()
   const auth = useAuth()
@@ -55,6 +57,8 @@ function App() {
         return <Calendar></Calendar>
       case 'dashboard/analyse':
         return <Analyse></Analyse>
+      case 'dashboard/DynamicApache':
+        return <DynamicApache></DynamicApache>
       case 'recreation/forum':
         return <Forum></Forum>
       case 'person/userinfo':

@@ -30,7 +30,7 @@ const Forum = () => {
   useEffect(() => {
     setClientHeight(document.body.clientHeight - 350)
     if (uuid) {
-      const client = io(`${process.env.REACT_APP_PUBLIC_URL}/forum`, {
+      const client = io(`${process.env.REACT_APP_WS_URL}/forum`, {
         transports: ['websocket'],
         query: {
           room: 'tempPnP',

@@ -54,7 +54,7 @@ const Index = () => {
       dispatch(getUserinfo())
     }
     if (uuid && !clientRef.current) {
-      const client = io(`${process.env.REACT_APP_PUBLIC_URL}/login`, {
+      const client = io(`${process.env.REACT_APP_WS_URL}/login`, {
         transports: ['websocket'],
         query: {
           room: 'login',

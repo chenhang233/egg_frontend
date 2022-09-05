@@ -1,6 +1,12 @@
 {
   "name": "egg_frontend",
   "version": "1.0.0",
+  "proxy": {
+    "/api/**": {
+      "target": "http://172.16.136.249:8080",
+      "changeOrigin": true
+    }
+  },
   "dependencies": {
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.3.0",
