@@ -1,22 +1,11 @@
-import axios from 'axios'
+import {
+  DynamicApacheDataJsonReturn,
+  DynamicApacheTableJsonReturn,
+} from './APItype'
+import http from './index'
 
 export const getemojiJson = () =>
-  axios.get('https://fastly.jsdelivr.net/npm/emoji-flags@1.3.0/data.json', {
-    proxy: {
-      protocol: 'https',
-      host: 'https://fastly.jsdelivr.net',
-      port: 80,
-    },
-  })
+  http.get<DynamicApacheDataJsonReturn>('/dashboard/getDynamicApacheDataJson')
 
 export const gettableJson = () =>
-  axios.get(
-    'https://echarts.apache.org/examples/data/asset/data/life-expectancy-table.json',
-    {
-      proxy: {
-        protocol: 'https',
-        host: 'https://echarts.apache.org',
-        port: 80,
-      },
-    }
-  )
+  http.get<DynamicApacheTableJsonReturn>('/dashboard/getDynamicApacheTableJson')

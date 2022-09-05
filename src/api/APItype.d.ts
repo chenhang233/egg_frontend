@@ -126,3 +126,15 @@ export type VisitNumberReturn = BASE_RETURN<{
   details: Visit_obj[]
   count: number
 }>
+
+export type DynamicApacheDataJsonReturn = BASE_RETURN<
+  {
+    code: string
+    dialCode: string
+    emoji: string
+    name: string
+    title: string
+    unicode: string
+  }[]
+>
+export type DynamicApacheTableJsonReturn = BASE_RETURN<(string | number)[][]>

@@ -1,4 +1,5 @@
 import * as echarts from 'echarts/core'
+
 import {
   BarChart,
   // 系列类型的定义后缀都为 SeriesOption
@@ -19,6 +20,7 @@ import {
   DatasetComponentOption,
   // 内置数据转换器组件 (filter, sort)
   TransformComponent,
+  GraphicComponent,
 } from 'echarts/components'
 import { LabelLayout, UniversalTransition } from 'echarts/features'
 import { CanvasRenderer } from 'echarts/renderers'
@@ -45,6 +47,7 @@ echarts.use([
   LabelLayout,
   UniversalTransition,
   CanvasRenderer,
+  GraphicComponent,
 ])
 export default echarts
 // const option: ECOption = {
