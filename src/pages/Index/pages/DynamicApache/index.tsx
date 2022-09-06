@@ -1,12 +1,9 @@
-import echarts from '../../../../echart'
+import echarts, { ECOption } from '../../../../echart'
 import { useEffect, useRef } from 'react'
 import { getemojiJson, gettableJson } from '../../../../api/apache'
 import styles from './index.module.scss'
 import classNames from 'classnames'
-interface Flag {
-  name: string
-  emoji: string
-}
+
 const updateFrequency = 2000
 const dimension = 0
 
@@ -39,7 +36,6 @@ const Apache = () => {
       promiseAll.then((primitive) => {
         const data1 = primitive[0].data.data
         const data2 = primitive[1].data.data
-        const flags: Flag[] = data1
         const years: string[] = []
         for (let i = 0; i < data2.length; ++i) {
           if (years.length === 0 || years[years.length - 1] !== data2[i][4]) {
@@ -59,7 +55,7 @@ const Apache = () => {
             return ''
           }
           return (
-            flags.find(function (item) {
+            data1.find(function (item) {
               return item.name === countryName
             }) || {}
           ).emoji
@@ -158,7 +154,7 @@ const Apache = () => {
             ],
           },
         }
-        myEcharts.setOption<any>(option)
+        myEcharts.setOption<ECOption>(option)
         // console.log(option);
         const updateYear = (year: string) => {
           let source = data2.slice(1).filter((d: (string | number)[]) => {
@@ -166,7 +162,7 @@ const Apache = () => {
           })
           ;(option as any).series[0].data = source
           ;(option as any).graphic.elements[0].style.text = year
-          myEcharts.setOption<any>(option)
+          myEcharts.setOption<ECOption>(option)
         }
       })
     }
