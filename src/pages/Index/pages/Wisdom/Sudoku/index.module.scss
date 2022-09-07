@@ -1,0 +1,51 @@
+.root {
+  margin: 20px auto;
+  text-align: center;
+  :global {
+    .title {
+      font-size: 20px;
+    }
+    .content {
+      display: flex;
+      .board {
+        flex: 4;
+        .row {
+          display: flex;
+          height: 11%;
+          .cell {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            height: 100%;
+            border: 1px solid #000;
+            &.top {
+              border-top: 3px solid red;
+            }
+            &.bottom {
+              border-bottom: 3px solid red;
+            }
+            &.left {
+              border-left: 3px solid red;
+            }
+            &.right {
+              border-right: 3px solid red;
+            }
+          }
+        }
+        .number {
+        }
+        .reload {
+          margin-top: 10px;
+        }
+      }
+      .tip {
+        flex: 6;
+        .ant-list {
+          overflow: auto;
+          // max-height: 100%;
+        }
+      }
+    }
+  }
+}

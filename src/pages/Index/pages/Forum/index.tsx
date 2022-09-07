@@ -9,11 +9,12 @@ import { useAppDispatch, useAppSelector } from '../../../../redux/hook'
 import { Forum_socket_listData, Forum_socket_online } from '../socketType'
 import { addForumListData } from '../../../../redux/socket'
 import { shallowEqual } from 'react-redux'
+import { useClienOutletHeight } from '../../Index'
 
 const Forum = () => {
   const clientRef = useRef<any>(null)
   const dispatch = useAppDispatch()
-  const [clientHeight, setClientHeight] = useState(400)
+  const { clienOutletHeight } = useClienOutletHeight()
   const [text, setText] = useState('')
   const { uuid } = useAppSelector(
     (state) => state.user.info.userinfo,
@@ -28,7 +29,6 @@ const Forum = () => {
     mydom?.scrollIntoView()
   }, [tempForumList])
   useEffect(() => {
-    setClientHeight(document.body.clientHeight - 350)
     if (uuid) {
       const client = io(`${process.env.REACT_APP_WS_URL}/forum`, {
         transports: ['websocket'],
@@ -72,7 +72,7 @@ const Forum = () => {
       <div className="panel">
         <h3>消息记录</h3>
         <hr />
-        <div className="content" style={{ height: clientHeight }}>
+        <div className="content" style={{ height: clienOutletHeight }}>
           <List
             className="comment-list"
             itemLayout="horizontal"

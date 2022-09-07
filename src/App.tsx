@@ -24,6 +24,7 @@ const Test = React.lazy(() => import('./pages/Test'))
 const Calendar = React.lazy(() => import('./pages/Index/pages/Calendar'))
 const Analyse = React.lazy(() => import('./pages/Index/pages/Analyse'))
 const Forum = React.lazy(() => import('./pages/Index/pages/Forum'))
+const Sudoku = React.lazy(() => import('./pages/Index/pages/Wisdom/Sudoku'))
 const Userinfo = React.lazy(() => import('./pages/Index/pages/Userinfo'))
 const DynamicApache = React.lazy(
   () => import('./pages/Index/pages/DynamicApache')
@@ -61,6 +62,8 @@ function App() {
         return <DynamicApache></DynamicApache>
       case 'recreation/forum':
         return <Forum></Forum>
+      case 'recreation/wisdom/sudoku':
+        return <Sudoku></Sudoku>
       case 'person/userinfo':
         return <Userinfo></Userinfo>
 

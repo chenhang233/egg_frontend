@@ -2,7 +2,12 @@ import { useCallback, useEffect, useRef } from 'react'
 import { shallowEqual } from 'react-redux'
 import { DownOutlined, UpOutlined } from '@ant-design/icons'
 import io from 'socket.io-client'
-import { Outlet, useLocation, useNavigate } from 'react-router-dom'
+import {
+  Outlet,
+  useLocation,
+  useNavigate,
+  useOutletContext,
+} from 'react-router-dom'
 import { useAppDispatch, useAppSelector } from '../../redux/hook'
 import { Button, Dropdown, MenuProps, Space } from 'antd'
 import { Breadcrumb, Layout, Menu } from 'antd'
@@ -17,6 +22,8 @@ import { transformIconStringToJSX } from '../../utils/enum'
 import { logoutUser } from '../../api/user'
 import { Login_socket_return } from './pages/socketType'
 import { addUserSocket } from '../../redux/socket'
+
+type ContextType = { clienOutletHeight: number }
 type MenuItem = Required<MenuProps>['items'][number]
 type Menus_AS = {
   label: React.ReactNode
@@ -36,6 +43,7 @@ const Index = () => {
   const [collapsed, setCollapsed] = useState(false)
   const [visible, setVisible] = useState(false)
   const [clientHeight, setClientHeight] = useState(600)
+  const [clienOutletHeight, setClienOutletHeight] = useState(400)
   const [socketInfo, setSocketInfo] = useState('暂无消息..')
   const [SocketListVisible, setSocketListVisible] = useState(false)
 
@@ -50,6 +58,7 @@ const Index = () => {
   const { userSokectList } = useAppSelector((state) => state.socket)
   useEffect(() => {
     setClientHeight(document.body.clientHeight - 200)
+    setClienOutletHeight(document.body.clientHeight - 380)
     if (!uuid) {
       dispatch(getUserinfo())
     }
@@ -283,7 +292,7 @@ const Index = () => {
               className="site-layout-background"
               style={{ padding: 24, maxHeight: clientHeight + 30 }}
             >
-              <Outlet></Outlet>
+              <Outlet context={{ clienOutletHeight }}></Outlet>
             </div>
           </Content>
           <Footer style={{ textAlign: 'center' }}>
@@ -296,3 +305,5 @@ const Index = () => {
 }
 
 export default Index
+
+export const useClienOutletHeight = () => useOutletContext<ContextType>()

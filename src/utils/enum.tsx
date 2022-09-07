@@ -14,6 +14,8 @@ import {
   BankOutlined,
   MehOutlined,
   BarChartOutlined,
+  LikeOutlined,
+  TableOutlined,
 } from '@ant-design/icons'
 
 export const transformIconStringToJSX = (name: string | null) => {
@@ -60,6 +62,12 @@ export const transformIconStringToJSX = (name: string | null) => {
       break
     case 'BarChartOutlined':
       icon = <BarChartOutlined />
+      break
+    case 'LikeOutlined':
+      icon = <LikeOutlined />
+      break
+    case 'TableOutlined':
+      icon = <TableOutlined />
       break
     default:
       break
