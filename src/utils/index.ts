@@ -29,6 +29,8 @@ export const isSafe = (
   col: number,
   n: number
 ) => {
+  console.log(board, 'board')
+
   for (let i = 0; i < col; i++) {
     if (board[row][i].number === n) return false
   }
@@ -44,7 +46,7 @@ export const isSafe = (
   return true
 }
 
-export const checkBoard = (board: Checkerboard) => {
+export const answerBoard = (board: Checkerboard) => {
   if (!board) return false
   const winBoard: Checkerboard = JSON.parse(JSON.stringify(board))
   const fn = (winBoard: Checkerboard) => {
@@ -84,10 +86,102 @@ export const numberNoRepeatRandom = (
     return Math.max(Math.floor(Math.random() * end + 1), start)
   }
   let currentNumber = fn()
-  while (countArr.includes(currentNumber)) {
+  let index = 0
+  while (countArr.includes(currentNumber) && index < end - start + 2) {
     currentNumber = fn()
+    index++
   }
   return currentNumber
+}
+
+export const InsertRandomNumberToPosition = (board: Checkerboard) => {
+  const randomPositionArr: number[] = [9, 19, 29, 39, 49, 59, 69, 79]
+  for (let index = 1; index <= 20; index++) {
+    let random = numberNoRepeatRandom(1, 9, [])
+    let randomPosition = numberNoRepeatRandom(0, 88, randomPositionArr)
+    randomPositionArr.push(randomPosition)
+    let str =
+      String(randomPosition).length === 1
+        ? '0' + String(randomPosition)
+        : String(randomPosition)
+    const [top, left] = str.split('')
+    while (!isSafe(board, Number(top), Number(left), random)) {
+      random = numberNoRepeatRandom(1, 9, [])
+    }
+    board[Number(top)][Number(left)].number = random
+    board[Number(top)][Number(left)].type = 'system'
+  }
+}
+
+export const generateBoard = () => {
+  const checkerboard: Checkerboard = Array.from({ length: 9 }, (_, i) =>
+    Array.from({ length: 9 }, (_, j) => ({
+      position: { top: i, left: j },
+      number: null,
+      id: Number(i + '' + j),
+      border: [
+        i % 3 === 0 ? 'top' : null,
+        j % 3 === 0 ? 'left' : null,
+        j === 8 ? 'right' : null,
+        i === 8 ? 'bottom' : null,
+      ],
+    }))
+  )
+  InsertRandomNumberToPosition(checkerboard)
+  return checkerboard
+}
+
+export const isValidSudoku = function (board: Checkerboard) {
+  let flag = true
+  A: for (let i = 0; i < board.length; i++) {
+    let prevArr = [board[i][0].number]
+    for (let j = 0; j < board[i].length; j++) {
+      if (i === 0) {
+        let prevArr2 = [board[i][j].number]
+        for (let k = 1; k < board.length; k++) {
+          for (let n = 0; n < prevArr2.length; n++) {
+            if (board[k][j].number && prevArr2[n] === board[k][j].number) {
+              flag = false
+              break A
+            }
+          }
+          if (board[k][j].number) {
+            prevArr2.push(board[k][j].number)
+          }
+        }
+      }
+      if (j > 0) {
+        if (board[i][j].number) {
+          for (let n = 0; n < prevArr.length; n++) {
+            if (board[i][j].number === prevArr[n]) {
+              flag = false
+              break A
+            }
+          }
+          prevArr.push(board[i][j].number)
+        }
+      }
+      if ((i === 0 || i % 3 === 0) && (j === 0 || j % 3 === 0)) {
+        const prev3Arr = []
+        for (let n = i; n < i + 3; n++) {
+          for (let m = j; m < j + 3; m++) {
+            if (board[n][m].number) {
+              if (prev3Arr.length > 0) {
+                for (let l = 0; l < prev3Arr.length; l++) {
+                  if (prev3Arr[l] === board[n][m].number) {
+                    flag = false
+                    break A
+                  }
+                }
+              }
+              prev3Arr.push(board[n][m].number)
+            }
+          }
+        }
+      }
+    }
+  }
+  return flag
 }
 
 export const localStorage_clear = () => {

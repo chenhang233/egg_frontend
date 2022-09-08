@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      .box {
+        position: absolute;
+        width: 50px;
+        height: 50px;
+        background-color: red;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="box"></div>
+    <script>
+      window.onload = (event) => {
+        main()
+      }
+
+      function main() {
+        const span = document.createElement('span')
+        span.innerText = '123'
+        span.style.setProperty('display', 'none')
+        span.style.setProperty(
+          'box-shadow',
+          '0px 0px 2px 1px rgba(0, 0, 0, 0.4)'
+        )
+        span.style.setProperty('padding', '0px 5px')
+        span.style.setProperty('position', 'fixed')
+
+        document.body.appendChild(span)
+
+        document.onmousemove = (event) => {
+          // console.log(event);
+          console.log(event.clientX, event.clientY)
+
+          // console.dir(span);
+          span.innerText = event.clientX + ', ' + event.clientY
+          span.style.setProperty('display', 'inline')
+          span.style.setProperty('top', event.clientY + 10 + 'px')
+          span.style.setProperty('left', event.clientX + 10 + 'px')
+        }
+      }
+    </script>
+  </body>
+</html>

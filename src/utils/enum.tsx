@@ -74,3 +74,14 @@ export const transformIconStringToJSX = (name: string | null) => {
   }
   return icon
 }
+export const numberArray = [
+  { number: 1, color: 'red' },
+  { number: 2, color: 'orange' },
+  { number: 3, color: 'yellow' },
+  { number: 4, color: 'green' },
+  { number: 5, color: 'blueness' },
+  { number: 6, color: 'blue' },
+  { number: 7, color: 'purple' },
+  { number: 8, color: 'black' },
+  { number: 9, color: 'gray' },
+]
