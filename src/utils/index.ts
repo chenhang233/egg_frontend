@@ -29,21 +29,23 @@ export const isSafe = (
   col: number,
   n: number
 ) => {
-  console.log(board, 'board')
-
-  for (let i = 0; i < col; i++) {
-    if (board[row][i].number === n) return false
-  }
-  for (let j = 0; j < row; j++) {
-    if (board[j][col].number === n) return false
-  }
-  for (let i = 0; i < 3; i++) {
-    for (let j = 0; j < 3; j++) {
-      if (board[row - (row % 3) + i][col - (col % 3) + j].number === n)
-        return false
+  try {
+    for (let i = 0; i < board.length; i++) {
+      if (board[row][i].number === n) return false
     }
+    for (let j = 0; j < board.length; j++) {
+      if (board[j][col].number === n) return false
+    }
+    for (let i = 0; i < 3; i++) {
+      for (let j = 0; j < 3; j++) {
+        if (board[row - (row % 3) + i][col - (col % 3) + j].number === n)
+          return false
+      }
+    }
+    return true
+  } catch {
+    return false
   }
-  return true
 }
 
 export const answerBoard = (board: Checkerboard) => {
@@ -83,37 +85,47 @@ export const numberNoRepeatRandom = (
   countArr: number[]
 ) => {
   const fn = () => {
-    return Math.max(Math.floor(Math.random() * end + 1), start)
+    return Math.max(Math.floor(Math.random() * end), start)
   }
   let currentNumber = fn()
-  let index = 0
-  while (countArr.includes(currentNumber) && index < end - start + 2) {
-    currentNumber = fn()
-    index++
+  while (countArr.includes(currentNumber)) {
+    currentNumber = currentNumber + 1 > end ? 0 : currentNumber + 1
   }
   return currentNumber
 }
 
-export const InsertRandomNumberToPosition = (board: Checkerboard) => {
+export const InsertRandomNumberToPosition = (
+  board: Checkerboard,
+  initChessPieces: number
+) => {
   const randomPositionArr: number[] = [9, 19, 29, 39, 49, 59, 69, 79]
-  for (let index = 1; index <= 20; index++) {
+  // const hashMap = new Map()
+  // Array.from({ length: 100 }, (_, i) => hashMap.set(i, null))
+  // console.log(hashMap, 'hashMap')
+  // randomPositionArr.forEach((v) => hashMap.set(v, v))
+  for (let index = 1; index <= initChessPieces; index++) {
+    let safeNumber = 20
     let random = numberNoRepeatRandom(1, 9, [])
     let randomPosition = numberNoRepeatRandom(0, 88, randomPositionArr)
     randomPositionArr.push(randomPosition)
+    // hashMap.set(randomPosition, randomPosition)
     let str =
       String(randomPosition).length === 1
         ? '0' + String(randomPosition)
         : String(randomPosition)
-    const [top, left] = str.split('')
-    while (!isSafe(board, Number(top), Number(left), random)) {
-      random = numberNoRepeatRandom(1, 9, [])
+    let [top, left] = str.split('')
+    while (!isSafe(board, Number(top), Number(left), random) && safeNumber) {
+      safeNumber--
+      random = 9 % (random + 1) === 0 ? 9 : random + 1
     }
-    board[Number(top)][Number(left)].number = random
-    board[Number(top)][Number(left)].type = 'system'
+    if (safeNumber) {
+      board[Number(top)][Number(left)].number = random
+      board[Number(top)][Number(left)].type = 'system'
+    }
   }
 }
 
-export const generateBoard = () => {
+export const generateBoard = (initChessPieces: number = 5) => {
   const checkerboard: Checkerboard = Array.from({ length: 9 }, (_, i) =>
     Array.from({ length: 9 }, (_, j) => ({
       position: { top: i, left: j },
@@ -127,7 +139,7 @@ export const generateBoard = () => {
       ],
     }))
   )
-  InsertRandomNumberToPosition(checkerboard)
+  InsertRandomNumberToPosition(checkerboard, initChessPieces)
   return checkerboard
 }
 
@@ -182,6 +194,28 @@ export const isValidSudoku = function (board: Checkerboard) {
     }
   }
   return flag
+}
+
+export const otherErrorChessPieces = (
+  board: Checkerboard,
+  row: number,
+  col: number,
+  n: number
+) => {
+  const result: { row: number; col: number }[] = []
+  for (let i = 0; i < board.length; i++) {
+    if (board[row][i].number === n) result.push({ row, col: i })
+  }
+  for (let j = 0; j < board.length; j++) {
+    if (board[j][col].number === n) result.push({ row: j, col })
+  }
+  for (let i = 0; i < 3; i++) {
+    for (let j = 0; j < 3; j++) {
+      if (board[row - (row % 3) + i][col - (col % 3) + j].number === n)
+        result.push({ row: row - (row % 3) + i, col: col - (col % 3) + j })
+    }
+  }
+  return result
 }
 
 export const localStorage_clear = () => {
