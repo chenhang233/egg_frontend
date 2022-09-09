@@ -19,6 +19,7 @@ import {
   SingleInterfaceReturn,
   SingleRouter,
   SingleRouterReturn,
+  SvgCaptchaReturn,
   UploadAvatarReturn,
   VisitNumberReturn,
 } from './APItype'
@@ -73,3 +74,6 @@ export const addInterface = (obj: SingleInterface) =>
 
 export const visitNum = () =>
   http.get<VisitNumberReturn>('/dashboard/visitNumbers')
+
+export const getsvgCaptcha = () =>
+  http.get<SvgCaptchaReturn>('/users/getSvgCaptcha')

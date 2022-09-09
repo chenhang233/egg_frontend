@@ -110,6 +110,8 @@ export type UploadAvatarReturn = BASE_RETURN<[]>
 
 export type SetUserInfoReturn = BASE_RETURN<[]>
 
+export type SvgCaptchaReturn = BASE_RETURN<{ data: SVGElement }>
+
 export type RolesReadReturn = BASE_RETURN<Roles[]>
 
 export type AddRoleReturn = BASE_RETURN<[]>

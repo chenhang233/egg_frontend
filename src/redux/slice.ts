@@ -9,6 +9,7 @@ import {
   getUserInfo,
   uploadAvatar,
   setUserInfo,
+  getsvgCaptcha,
 } from '../api/user'
 import {
   Condition_1,
@@ -27,6 +28,7 @@ interface InitialState {
   text: string
   theme: 'default' | 'dark'
   isLogin: boolean
+  svgCaptcha: SVGElement | any
 }
 
 export const initialState: InitialState = {
@@ -40,6 +42,7 @@ export const initialState: InitialState = {
   interfaceAuth: [],
   routerAuth: [],
   isLogin: false,
+  svgCaptcha: undefined,
 }
 
 export interface PromiseNum {
@@ -77,6 +80,10 @@ export const setUserinfo = createAsyncThunk(
     return data
   }
 )
+export const getSvgCaptcha = createAsyncThunk('getSvgCaptcha', async () => {
+  const { data } = await getsvgCaptcha()
+  return data
+})
 
 export const getRolesRead = createAsyncThunk('getRolesRead', async () => {
   const data = await getRolesread()
@@ -159,6 +166,9 @@ export const stateSlice = createSlice({
     builder.addCase(getUserinfo.fulfilled, (state, action) => {
       const userinfo = action.payload.data.data
       state.info.userinfo = userinfo
+    })
+    builder.addCase(getSvgCaptcha.fulfilled, (state, action) => {
+      state.svgCaptcha = action.payload.data.data
     })
     builder.addCase(getRolesRead.fulfilled, (state, action) => {
       const routeArr = action.payload.data.data

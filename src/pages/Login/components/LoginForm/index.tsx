@@ -4,7 +4,7 @@ import styles from './index.module.scss'
 import { LockOutlined, UserOutlined } from '@ant-design/icons'
 import { LOginData } from '../../../../api/APItype'
 import { useAppDispatch, useAppSelector } from '../../../../redux/hook'
-import { loginChange, _loginUser } from '../../../../redux/slice'
+import { getSvgCaptcha, loginChange, _loginUser } from '../../../../redux/slice'
 import { useEffect, useRef, useState } from 'react'
 import { success } from '../../../../api'
 import { Location, useLocation, useNavigate } from 'react-router-dom'
@@ -22,6 +22,7 @@ interface Type {
 const LoginForm = (props: Prop_loginFomr) => {
   const dispatch = useAppDispatch()
   const theme = useAppSelector((state) => state.user.theme, shallowEqual)
+  const svg = useAppSelector((state) => state.user.svgCaptcha, shallowEqual)
   const [isLogin, setIsLogin] = useState(false)
   const navigate = useNavigate()
   const location = useLocation()
@@ -42,7 +43,8 @@ const LoginForm = (props: Prop_loginFomr) => {
   useEffect(() => {
     ref.current = document.querySelectorAll('.ant-form-item')
     ref.current.forEach((node, i) => node.setAttribute('style', `--i:${i + 1}`))
-  }, [])
+    dispatch(getSvgCaptcha())
+  }, [dispatch])
 
   return (
     <div className={classNames(styles.root)}>
