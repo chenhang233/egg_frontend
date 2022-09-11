@@ -18,6 +18,7 @@ import {
   LOginData,
   LoginReduxData,
   Roles,
+  SvgCaptcha,
 } from '../api/APItype'
 import { localStorage_add, localStorage_clear } from '../utils'
 interface InitialState {
@@ -28,7 +29,7 @@ interface InitialState {
   text: string
   theme: 'default' | 'dark'
   isLogin: boolean
-  svgCaptcha: SVGElement | any
+  svgCaptcha: SvgCaptcha | undefined
 }
 
 export const initialState: InitialState = {
@@ -168,7 +169,7 @@ export const stateSlice = createSlice({
       state.info.userinfo = userinfo
     })
     builder.addCase(getSvgCaptcha.fulfilled, (state, action) => {
-      state.svgCaptcha = action.payload.data.data
+      state.svgCaptcha = action.payload.data
     })
     builder.addCase(getRolesRead.fulfilled, (state, action) => {
       const routeArr = action.payload.data.data

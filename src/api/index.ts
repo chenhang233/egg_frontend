@@ -24,6 +24,7 @@ export const warning = (msg?: String) => {
 const instance = axios.create({
   baseURL: process.env.REACT_APP_PUBLIC_URL,
   timeout: 2000,
+  withCredentials: true,
   //   headers: {'X-Custom-Header': 'foobar'}
 })
 

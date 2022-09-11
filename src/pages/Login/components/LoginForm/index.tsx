@@ -54,7 +54,6 @@ const LoginForm = (props: Prop_loginFomr) => {
           styleObj={{ position: 'absolute', top: '0px', left: '225px' }}
         ></Loading>
       )}
-      <Svg></Svg>
       <Form
         style={{ display: isLogin ? 'none' : 'block' }}
         className={classNames(theme)}
@@ -93,6 +92,27 @@ const LoginForm = (props: Prop_loginFomr) => {
             type="password"
             placeholder="Password"
           />
+        </Form.Item>
+        <Form.Item label="验证码">
+          <Row gutter={8}>
+            <Col span={12}>
+              <Form.Item
+                name="captcha"
+                noStyle
+                rules={[
+                  {
+                    required: true,
+                    message: '请输入验证码!',
+                  },
+                ]}
+              >
+                <Input />
+              </Form.Item>
+            </Col>
+            <Col span={12}>
+              <Svg></Svg>
+            </Col>
+          </Row>
         </Form.Item>
         <Form.Item wrapperCol={{ offset: 5 }}>
           <Row gutter={24} justify={'center'}>

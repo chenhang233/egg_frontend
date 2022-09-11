@@ -38,6 +38,7 @@ export type Menu = {
 export type LOginData = {
   username: string
   password: string
+  captcha: string
 }
 export interface LoginReduxData {
   refreshToken: string
@@ -90,6 +91,11 @@ interface Visit_obj {
   username: string
 }
 
+interface SvgCaptcha {
+  rect: { fill: string }
+  path: { fill: string; d: string; stroke?: string }[]
+}
+
 export type LoginReturn = BASE_RETURN<{
   refreshToken: string
   token: string
@@ -110,7 +116,7 @@ export type UploadAvatarReturn = BASE_RETURN<[]>
 
 export type SetUserInfoReturn = BASE_RETURN<[]>
 
-export type SvgCaptchaReturn = BASE_RETURN<{ data: SVGElement }>
+export type SvgCaptchaReturn = BASE_RETURN<SvgCaptcha>
 
 export type RolesReadReturn = BASE_RETURN<Roles[]>
 
