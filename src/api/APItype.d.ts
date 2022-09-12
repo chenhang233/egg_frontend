@@ -94,6 +94,7 @@ interface Visit_obj {
 interface SvgCaptcha {
   rect: { fill: string }
   path: { fill: string; d: string; stroke?: string }[]
+  text: string
 }
 
 export type LoginReturn = BASE_RETURN<{

@@ -23,6 +23,10 @@ interface Type {
 const LoginForm = (props: Prop_loginFomr) => {
   const dispatch = useAppDispatch()
   const theme = useAppSelector((state) => state.user.theme, shallowEqual)
+  const captcha = useAppSelector(
+    (state) => state.user.svgCaptcha?.text,
+    shallowEqual
+  )
   const [isLogin, setIsLogin] = useState(false)
   const navigate = useNavigate()
   const location = useLocation()
@@ -103,6 +107,10 @@ const LoginForm = (props: Prop_loginFomr) => {
                   {
                     required: true,
                     message: '请输入验证码!',
+                  },
+                  {
+                    pattern: new RegExp(captcha || ''),
+                    message: '验证码错误!',
                   },
                 ]}
               >
