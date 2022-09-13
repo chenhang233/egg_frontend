@@ -1,5 +1,6 @@
 import { Route } from '../api/APItype'
 import { Checkerboard } from '../pages/Index/pages/Wisdom/Sudoku'
+import { numberArray } from './enum'
 type TOKEN = 'token' | 'refreshToken' | 'isLogin'
 
 export interface TransformRoute extends Route {
@@ -93,36 +94,73 @@ export const numberNoRepeatRandom = (
   }
   return currentNumber
 }
+export const solveSudoku = (board: Checkerboard) => {
+  let row = 0
+  let col = 0
+  let checkEverySpaces = false
+  for (row = 0; row < board.length; row++) {
+    for (col = 0; col < board[row].length; col++) {
+      if (board[row][col].number === null) {
+        checkEverySpaces = true
+        break
+      }
+    }
+    if (checkEverySpaces) break
+  }
+  if (!checkEverySpaces) return true
+  for (let n = 1; n <= 9; n++) {
+    if (isSafe(board, row, col, n)) {
+      board[row][col].number = n
+      board[row][col].type = 'system'
+      if (solveSudoku(board)) {
+        return true
+      }
+      board[row][col].number = null
+      board[row][col].type = undefined
+    }
+  }
+  return false
+}
+
+export const generatePosition = (
+  randomPositionArr: number[],
+  randomEnd: number
+) => {
+  let randomPosition = numberNoRepeatRandom(0, randomEnd, randomPositionArr)
+  randomPositionArr.push(randomPosition)
+  let str =
+    String(randomPosition).length === 1
+      ? '0' + String(randomPosition)
+      : String(randomPosition)
+  let [top, left] = str.split('')
+  let Top = Number(top)
+  let Left = Number(left)
+  return [Top, Left]
+}
 
 export const InsertRandomNumberToPosition = (
   board: Checkerboard,
   initChessPieces: number
 ) => {
   const randomPositionArr: number[] = [9, 19, 29, 39, 49, 59, 69, 79]
-  // const hashMap = new Map()
-  // Array.from({ length: 100 }, (_, i) => hashMap.set(i, null))
-  // console.log(hashMap, 'hashMap')
-  // randomPositionArr.forEach((v) => hashMap.set(v, v))
-  for (let index = 1; index <= initChessPieces; index++) {
-    let safeNumber = 20
-    let random = numberNoRepeatRandom(1, 9, [])
-    let randomPosition = numberNoRepeatRandom(0, 88, randomPositionArr)
-    randomPositionArr.push(randomPosition)
-    // hashMap.set(randomPosition, randomPosition)
-    let str =
-      String(randomPosition).length === 1
-        ? '0' + String(randomPosition)
-        : String(randomPosition)
-    let [top, left] = str.split('')
-    while (!isSafe(board, Number(top), Number(left), random) && safeNumber) {
-      safeNumber--
-      random = 9 % (random + 1) === 0 ? 9 : random + 1
-    }
-    if (safeNumber) {
-      board[Number(top)][Number(left)].number = random
-      board[Number(top)][Number(left)].type = 'system'
+  for (let index = 1; index <= 9; index++) {
+    const [Top, Left] = generatePosition(randomPositionArr, 88)
+    const n = numberArray[index - 1].number
+    if (isSafe(board, Top, Left, n)) {
+      board[Top][Left].number = n
+      board[Top][Left].type = 'system'
     }
   }
+  const b = JSON.parse(JSON.stringify(board)) as Checkerboard
+  const f = solveSudoku(b)
+  if (f) {
+    for (let index = 10; index <= initChessPieces; index++) {
+      const [Top, Left] = generatePosition(randomPositionArr, 88)
+      board[Top][Left].number = b[Top][Left].number
+      board[Top][Left].type = 'system'
+    }
+  }
+  return b
 }
 
 export const generateBoard = (initChessPieces: number = 5) => {
@@ -139,8 +177,8 @@ export const generateBoard = (initChessPieces: number = 5) => {
       ],
     }))
   )
-  InsertRandomNumberToPosition(checkerboard, initChessPieces)
-  return checkerboard
+  const answer = InsertRandomNumberToPosition(checkerboard, initChessPieces)
+  return { checkerboard, answer }
 }
 
 export const isValidSudoku = function (board: Checkerboard) {

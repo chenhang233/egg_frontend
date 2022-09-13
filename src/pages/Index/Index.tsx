@@ -58,10 +58,12 @@ const Index = () => {
   const { userSokectList } = useAppSelector((state) => state.socket)
   useEffect(() => {
     setClientHeight(document.body.clientHeight - 200)
-    setClienOutletHeight(document.body.clientHeight - 380)
+    setClienOutletHeight(document.body.clientHeight - 200)
     if (!uuid) {
       dispatch(getUserinfo())
     }
+  }, [dispatch, uuid])
+  useEffect(() => {
     if (uuid && !clientRef.current) {
       const client = io(`${process.env.REACT_APP_WS_URL}/login`, {
         transports: ['websocket'],
@@ -82,13 +84,13 @@ const Index = () => {
         dispatch(addUserSocket({ value: msg }))
       })
       client.on('disconnect', (msg: any) => {
-        console.log(msg)
+        console.log(msg, 'disconnect')
+        clientRef.current = null
+        dispatch(getUserinfo())
       })
-      return () => {
-        client.close()
-      }
     }
-  }, [dispatch, uuid])
+  }, [uuid, dispatch])
+
   const menu = (
     <Menu
       items={userSokectList.map((v, i) => {
@@ -290,7 +292,7 @@ const Index = () => {
             </Breadcrumb>
             <div
               className="site-layout-background"
-              style={{ padding: 24, maxHeight: clientHeight + 30 }}
+              style={{ padding: 15, maxHeight: clientHeight + 30 }}
             >
               <Outlet context={{ clienOutletHeight }}></Outlet>
             </div>

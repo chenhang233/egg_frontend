@@ -9,6 +9,7 @@ import {
 } from '../../../../../utils'
 import { numberArray } from '../../../../../utils/enum'
 import { useEffect, useState, useRef } from 'react'
+import { info, success, warning } from '../../../../../api'
 
 export interface SingleBox {
   position: { top: number; left: number }
@@ -20,25 +21,47 @@ export interface SingleBox {
 }
 
 export type Checkerboard = SingleBox[][]
-const data = [
-  'Racing car sprays burning fuel into crowd.',
-  'Japanese princess to wed commoner.',
-]
+export interface CheckerboardObj {
+  Checkerboard: Checkerboard
+  currentCell: number | null
+}
+export type CheckerboardList = CheckerboardObj[]
 
+export interface CurrentButton {
+  number: number
+  color: string
+}
+const initCellNumber = 20
 const Sudoku = () => {
   const { clienOutletHeight } = useClienOutletHeight()
   const boardRef = useRef<HTMLDivElement>(null)
   const [game, setGame] = useState(true)
-  const [initNumber, setInitNumber] = useState(20)
+  const [initNumber, setInitNumber] = useState(initCellNumber)
+  const [count, setCount] = useState(initCellNumber)
   const [checkerboard, setCheckerboard] = useState<Checkerboard>([])
-  const [currentButton, setCurrentButton] = useState<{
-    number: number
-    color: string
-  }>({ number: 1, color: 'red' })
+  const [initBoardSnapshot, setInitBoardSnapshot] = useState<Checkerboard>([])
+  const [boardList, setBoardList] = useState<CheckerboardList>([])
+  const [answer, setAnswer] = useState<Checkerboard>([])
+  const [currentButton, setCurrentButton] = useState<CurrentButton>({
+    number: 1,
+    color: 'red',
+  })
+  // const [currentPosition, setCurrentPosition] = useState<{top:number,left:number}>()
   useEffect(() => {
-    setCheckerboard(generateBoard(initNumber))
+    const { checkerboard, answer } = generateBoard(initNumber)
+    setInitBoardSnapshot(checkerboard)
+    setAnswer(answer)
+    setCheckerboard(checkerboard)
   }, [initNumber])
+  useEffect(() => {
+    if (count >= 81 && game) {
+      setGame(false)
+      success('你赢了')
+    }
+  }, [count, game])
+
   const cellWheel = (e: React.WheelEvent<HTMLDivElement>) => {
+    e.stopPropagation()
     setTimeout(() => {
       const native = e.nativeEvent as any
       const wheelDelta = native.wheelDelta
@@ -55,8 +78,6 @@ const Sudoku = () => {
     col: number,
     type: 'system' | 'user' | undefined
   ) => {
-    console.log(row, col, type, game)
-
     if (type === 'system' || !game) return
     const newoard: Checkerboard = JSON.parse(JSON.stringify(checkerboard))
     newoard[row][col].number = currentButton.number
@@ -77,6 +98,53 @@ const Sudoku = () => {
       setGame(false)
     }
     setCheckerboard(newoard)
+    setBoardList([
+      ...boardList,
+      { currentCell: currentButton.number, Checkerboard: newoard },
+    ])
+    setCount(count + 1)
+  }
+  const reloadGame = () => {
+    const { checkerboard, answer } = generateBoard(initNumber)
+    setCheckerboard(checkerboard)
+    setAnswer(answer)
+    setGame(true)
+    setBoardList([])
+  }
+  const backtrack = (i: number) => {
+    if (i === 0) {
+      setCheckerboard(initBoardSnapshot)
+      setBoardList([])
+    } else {
+      setCheckerboard(boardList[i - 1].Checkerboard)
+      setBoardList(boardList.slice(0, i))
+    }
+    setGame(true)
+    setCount(count - (boardList.length - i))
+  }
+  const selectCellNumber = (num: number) => {
+    setInitNumber(num)
+    setCount(num)
+    setBoardList([])
+  }
+  const tipGame = () => {
+    for (let i = 0; i < 9; i++) {
+      for (let j = 0; j < 9; j++) {
+        if (!checkerboard[i][j].number) {
+          const { position, number } = answer[i][j]
+          info(
+            `第${position.top + 1}行,第${
+              position.left + 1
+            }列, 填入数字${number}`
+          )
+          return
+        }
+      }
+    }
+    warning('暂无提示')
+  }
+  const currentButtonClick = (o: CurrentButton) => {
+    setCurrentButton(o)
   }
   return (
     <div className={classNames(styles.root)}>
@@ -87,7 +155,7 @@ const Sudoku = () => {
             <Button
               type="primary"
               className="reload"
-              onClick={() => setCheckerboard(generateBoard(initNumber))}
+              onClick={() => reloadGame()}
             >
               重新开始
             </Button>
@@ -99,13 +167,16 @@ const Sudoku = () => {
               filterOption={(input, option) =>
                 String(option?.value).includes(input)
               }
-              onSelect={(num: number) => setInitNumber(num)}
+              defaultValue={initCellNumber}
+              onSelect={(num: number) => selectCellNumber(num)}
               options={Array.from({ length: 80 }, (_, i) => ({
                 label: i + 1,
                 value: i + 1,
               }))}
             ></Select>
-            <Button type="primary">提示</Button>
+            <Button type="primary" onClick={tipGame}>
+              提示
+            </Button>
           </Row>
           {checkerboard.map((row, i) => (
             <div className="row" key={i}>
@@ -134,7 +205,7 @@ const Sudoku = () => {
                 id={
                   o.number === currentButton.number ? 'currentColor' : undefined
                 }
-                onClick={() => setCurrentButton(o)}
+                onClick={() => currentButtonClick(o)}
               >
                 {o.number}
               </Button>
@@ -145,9 +216,17 @@ const Sudoku = () => {
           <List
             header={<div>回溯</div>}
             bordered
-            dataSource={data}
-            renderItem={(item) => <List.Item>{item}</List.Item>}
+            dataSource={boardList}
+            renderItem={(item, i) => (
+              <List.Item>
+                撤销操作数字:{' '}
+                <Button type="primary" onClick={() => backtrack(i)}>
+                  {item.currentCell}
+                </Button>
+              </List.Item>
+            )}
           />
+          <div>{count}</div>
         </div>
       </div>
     </div>

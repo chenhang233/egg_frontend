@@ -21,6 +21,10 @@ export const warning = (msg?: String) => {
   message.warning(msg || 'WARNIMG', 3)
 }
 
+export const info = (msg?: String) => {
+  message.info(msg || 'INFO', 3)
+}
+
 const instance = axios.create({
   baseURL: process.env.REACT_APP_PUBLIC_URL,
   timeout: 2000,
