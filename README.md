@@ -1,46 +1,33 @@
-# Getting Started with Create React App
+# react完成的个人项目
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+创建项目引导 [Create React App](https://github.com/facebook/create-react-app).
 
-## Available Scripts
+## 启动项目:
 
-In the project directory, you can run:
+运行:
 
-### `npm start`
+### `npm start` 或者 `yarn start`
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
 
-### `npm test`
+### `npm run build `或者 `yarn build`
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
-
-### `npm run build`
-
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+使用脚手架提供的基本webpack配置打包前端文件
 
 ### `npm run eject`
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+不需要,自定义配置
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+## 接口文档:
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+地址:https://console-docs.apipost.cn/preview/a58576c02db893b2/404a2278ddbb3a7a
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+后台代码地址:https://gitee.com/long-and-so-on/egg_hang
 
-## Learn More
+线上接口地址: 暂无
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+## 了解更多:
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+脚手架文档: [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+
+react文档： [React documentation](https://reactjs.org/).
