@@ -18,12 +18,9 @@ root.render(
   <HistoryRouter history={history}>
     <Provider store={store}>
       <ConfigProvider locale={zhCN}>
-<<<<<<< HEAD
-        <AppTest />
-=======
-        {/* <App /> */}
-        <Upload></Upload>
->>>>>>> a9f7a657ae62ba03c812f94627cbb7b7ace2d91f
+        {/* <AppTest /> */}
+        <App />
+        {/* <Upload></Upload> */}
       </ConfigProvider>
     </Provider>
   </HistoryRouter>
